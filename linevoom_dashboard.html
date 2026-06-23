@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Line Voom Dashboard — DH Thailand เม.ย.–มิ.ย. 69</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg:     #f4f7f4;
+    --white:  #ffffff;
+    --border: #d8e8d8;
+    --green1: #2e7d32;
+    --green2: #43a047;
+    --green3: #81c784;
+    --green4: #c8e6c9;
+    --green5: #e8f5e9;
+    --img:    #2e7d32;
+    --video:  #1565c0;
+    --reach:  #00897b;
+    --click:  #f9a825;
+    --react:  #e53935;
+    --vv:     #7b1fa2;
+    --muted:  #6a8f6a;
+    --text:   #1b2e1b;
+    --line:   #06C755;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', 'Noto Sans Thai', sans-serif;
+    padding: 32px 28px 64px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .header {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-left: 5px solid var(--line);
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 18px;
+  }
+  .header-icon {
+    width: 52px; height: 52px;
+    background: #e8f5e9;
+    border: 2px solid var(--green3);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.7rem; flex-shrink: 0;
+  }
+  .header h1 { font-size: 1.45rem; font-weight: 700; color: var(--green1); }
+  .header p  { color: var(--muted); font-size: .88rem; margin-top: 3px; }
+  .badge {
+    margin-left: auto; background: var(--green5);
+    border: 1px solid var(--green4); border-radius: 20px;
+    padding: 6px 16px; font-size: .77rem; color: var(--green1);
+    white-space: nowrap; flex-shrink: 0;
+  }
+
+  /* Note box */
+  .note {
+    background: #fff8e1; border: 1px solid #ffe082;
+    border-radius: 10px; padding: 10px 16px;
+    font-size: .82rem; color: #5d4037; margin-bottom: 18px;
+  }
+  .note strong { color: #e65100; }
+
+  /* KPI */
+  .kpi-row {
+    display: grid; grid-template-columns: repeat(6,1fr);
+    gap: 12px; margin-bottom: 18px;
+  }
+  .kpi {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 14px; padding: 16px 12px; text-align: center;
+  }
+  .kpi-icon  { font-size: 1.4rem; margin-bottom: 5px; }
+  .kpi-label { font-size: .69rem; color: var(--muted); text-transform: uppercase; letter-spacing: .7px; }
+  .kpi-num   { font-size: 1.7rem; font-weight: 700; margin: 4px 0 2px; line-height: 1; color: var(--green1); }
+  .kpi-num.blue   { color: var(--video); }
+  .kpi-num.teal   { color: var(--reach); }
+  .kpi-num.amber  { color: var(--click); }
+  .kpi-num.purple { color: var(--vv); }
+  .kpi-sub   { font-size: .7rem; color: var(--muted); }
+
+  /* Type boxes */
+  .type-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+  .type-box {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 14px; padding: 18px 16px;
+    display: flex; gap: 14px; align-items: center;
+  }
+  .type-box .ico { font-size: 1.8rem; }
+  .type-name   { font-size: .71rem; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; }
+  .type-count  { font-size: 1.5rem; font-weight: 700; margin: 2px 0; }
+  .type-count.green { color: var(--img); }
+  .type-count.blue  { color: var(--video); }
+  .type-eng    { font-size: .76rem; color: var(--muted); line-height: 1.7; }
+  .type-eng b  { color: var(--text); }
+
+  /* Card */
+  .card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 16px; padding: 22px 24px; margin-bottom: 18px;
+  }
+  .card-title {
+    font-size: .93rem; font-weight: 700; color: var(--green1);
+    display: flex; align-items: center; gap: 8px; margin-bottom: 18px;
+  }
+
+  /* Table */
+  .tbl-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .83rem; }
+  thead th {
+    background: var(--green5); color: var(--green1);
+    font-size: .71rem; text-transform: uppercase; letter-spacing: .6px;
+    font-weight: 700; padding: 9px 11px; text-align: center;
+    border-bottom: 2px solid var(--green4);
+  }
+  thead th:first-child { text-align:left; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
+  tbody tr:hover { background: var(--green5); }
+  tbody td { padding: 9px 11px; text-align: center; vertical-align: middle; }
+  tbody td:first-child { text-align: left; color: var(--muted); white-space: nowrap; }
+  tfoot td {
+    padding: 9px 11px; text-align: center;
+    background: var(--green5); font-weight: 700;
+    border-top: 2px solid var(--green4); color: var(--green1);
+  }
+  tfoot td:first-child { text-align: left; }
+
+  .tag { display: inline-block; border-radius: 10px; padding: 2px 9px; font-size: .73rem; font-weight: 600; }
+  .tag.img   { background: #e8f5e9; color: var(--img); }
+  .tag.video { background: #e3f2fd; color: var(--video); }
+  .tag.month-apr { background: #e8f5e9; color: #2e7d32; }
+  .tag.month-may { background: #e3f2fd; color: #1565c0; }
+  .tag.month-jun { background: #fff3e0; color: #e65100; }
+
+  .num-reach  { color: var(--reach);  font-weight: 600; }
+  .num-click  { color: var(--click);  font-weight: 600; }
+  .num-react  { color: var(--react);  font-weight: 600; }
+  .num-vv     { color: var(--vv);     font-weight: 600; }
+  .num-total  { color: var(--green1); font-weight: 700; }
+
+  .footer { text-align:center; color:var(--muted); font-size:.75rem; margin-top:8px; }
+
+  @media(max-width:900px) {
+    .kpi-row { grid-template-columns: repeat(3,1fr); }
+    .badge { display: none; }
+  }
+  @media(max-width:560px) {
+    .kpi-row { grid-template-columns: repeat(2,1fr); }
+    .type-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-icon">💬</div>
+  <div>
+    <h1>Line Voom — De Hygienique Thailand</h1>
+    <p>สรุปการโพสต์ + Reach / Clicks / Video Views รายโพสต์ แยกตามประเภท</p>
+  </div>
+  <span class="badge">📅 เม.ย.–มิ.ย. 2569 &nbsp;|&nbsp; Line Voom Studio Export</span>
+</div>
+
+<div class="note">
+  ⚠️ <strong>หมายเหตุ:</strong> Line Voom ไม่ระบุชื่อโพสต์ในไฟล์ Export — แสดงเฉพาะ Post ID และ Metrics
+  &nbsp;|&nbsp; Reactions / Comments / Shares มีน้อยมากตามธรรมชาติของแพลตฟอร์ม — <strong>Reach และ Clicks คือ metric หลัก</strong>
+</div>
+
+<!-- KPI -->
+<div class="kpi-row">
+  <div class="kpi">
+    <div class="kpi-icon">📋</div>
+    <div class="kpi-label">โพสต์ทั้งหมด</div>
+    <div class="kpi-num">70</div>
+    <div class="kpi-sub">3 เดือน</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-icon">🖼️</div>
+    <div class="kpi-label">ภาพนิ่ง</div>
+    <div class="kpi-num">46</div>
+    <div class="kpi-sub">65.7%</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-icon">🎬</div>
+    <div class="kpi-label">วิดีโอ</div>
+    <div class="kpi-num blue">24</div>
+    <div class="kpi-sub">34.3%</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-icon">👥</div>
+    <div class="kpi-label">Reach รวม</div>
+    <div class="kpi-num teal">7,538</div>
+    <div class="kpi-sub">ผู้เข้าถึง</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-icon">🖱️</div>
+    <div class="kpi-label">Clicks รวม</div>
+    <div class="kpi-num amber">219</div>
+    <div class="kpi-sub">คลิกทั้งหมด</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-icon">▶️</div>
+    <div class="kpi-label">Video Views</div>
+    <div class="kpi-num purple">661</div>
+    <div class="kpi-sub">≥ 3 วินาที</div>
+  </div>
+</div>
+
+<!-- TYPE BOXES -->
+<div class="type-row">
+  <div class="type-box">
+    <div class="ico">🖼️</div>
+    <div>
+      <div class="type-name">ภาพนิ่ง (Photo) — 46 โพสต์</div>
+      <div class="type-count green">เม.ย. 13 &nbsp;·&nbsp; พ.ค. 19 &nbsp;·&nbsp; มิ.ย. 14</div>
+      <div class="type-eng">
+        👥 Reach <b>4,655</b> &nbsp;·&nbsp; 🖱️ Clicks <b>141</b><br>
+        ❤️ Reactions <b>2</b> &nbsp;·&nbsp; 💬 Comments <b>0</b> &nbsp;·&nbsp; 🔗 Shares <b>0</b>
+      </div>
+    </div>
+  </div>
+  <div class="type-box">
+    <div class="ico">🎬</div>
+    <div>
+      <div class="type-name">วิดีโอ (Video) — 24 โพสต์</div>
+      <div class="type-count blue">เม.ย. 10 &nbsp;·&nbsp; พ.ค. 8 &nbsp;·&nbsp; มิ.ย. 6</div>
+      <div class="type-eng">
+        👥 Reach <b>2,883</b> &nbsp;·&nbsp; 🖱️ Clicks <b>78</b> &nbsp;·&nbsp; ▶️ VV <b>661</b><br>
+        ❤️ Reactions <b>7</b> &nbsp;·&nbsp; 💬 Comments <b>2</b> &nbsp;·&nbsp; 🔗 Shares <b>1</b>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHART -->
+<div class="card">
+  <div class="card-title">📊 จำนวนโพสต์ (ภาพ vs วิดีโอ) และ Reach รวม — แยกรายเดือน</div>
+  <canvas id="mainChart" height="95"></canvas>
+</div>
+
+<!-- TABLE -->
+<div class="card">
+  <div class="card-title">📄 รายละเอียดทุกโพสต์ (70 โพสต์)</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>วันที่</th>
+          <th>เดือน</th>
+          <th>ประเภท</th>
+          <th>👥 Reach</th>
+          <th>🖱️ Clicks</th>
+          <th>▶️ Video Views</th>
+          <th>❤️ Reactions</th>
+          <th>💬 Comments</th>
+          <th>🔗 Shares</th>
+        </tr>
+      </thead>
+      <tbody id="tBody"></tbody>
+      <tfoot id="tFoot"></tfoot>
+    </table>
+  </div>
+</div>
+
+<div class="footer">
+  De Hygienique Thailand · Line Voom Apr–Jun 2026 · ข้อมูล: Line Voom Studio Export
+</div>
+
+<script>
+const POSTS = [
+  {date:"01/04",month:"เม.ย. 69",type:"ภาพนิ่ง",reach:89,clicks:2,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"02/04",month:"เม.ย. 69",type:"ภาพนิ่ง",reach:58,clicks:0,vv3:0,reactions:1,comments:0,shares:0},
+  {date:"02/04",month:"เม.ย. 69",type:"ภาพนิ่ง",reach:101,clicks:4,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"03/04",month:"เม.ย. 69",type:"วิดีโอ",reach:91,clicks:1,vv3:11,reactions:0,comments:0,shares:0},
+  {date:"04/04",month:"เม.ย. 69",type:"วิดีโอ",reach:105,clicks:4,vv3:29,reactions:0,comments:0,shares:0},
+  {date:"05/04",month:"เม.ย. 69",type:"ภาพนิ่ง",reach:155,clicks:9,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"07/04",month:"เม.ย. 69",type:"วิดีโอ",reach:85,clicks:6,vv3:17,reactions:0,comments:0,shares:0},
+  {date:"09/04",month:"เม.ย. 69",type:"ภาพนิ่ง",reach:86,clicks:3,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"10/04",month:"เม.ย. 69",type:"ภาพนิ่ง",reach:81,clicks:4,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"11/04",month:"เม.ย. 69",type:"ภาพนิ่ง",reach:107,clicks:6,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"12/04",month:"เม.ย. 69",type:"ภาพนิ่ง",reach:134,clicks:6,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"13/04",month:"เม.ย. 69",type:"วิดีโอ",reach:78,clicks:1,vv3:4,reactions:0,comments:0,shares:0},
+  {date:"14/04",month:"เม.ย. 69",type:"ภาพนิ่ง",reach:101,clicks:1,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"15/04",month:"เม.ย. 69",type:"ภาพนิ่ง",reach:184,clicks:2,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"17/04",month:"เม.ย. 69",type:"ภาพนิ่ง",reach:144,clicks:4,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"18/04",month:"เม.ย. 69",type:"วิดีโอ",reach:149,clicks:2,vv3:37,reactions:0,comments:0,shares:0},
+  {date:"19/04",month:"เม.ย. 69",type:"วิดีโอ",reach:193,clicks:0,vv3:47,reactions:0,comments:0,shares:0},
+  {date:"21/04",month:"เม.ย. 69",type:"วิดีโอ",reach:138,clicks:3,vv3:25,reactions:1,comments:0,shares:0},
+  {date:"22/04",month:"เม.ย. 69",type:"วิดีโอ",reach:127,clicks:2,vv3:28,reactions:0,comments:0,shares:0},
+  {date:"24/04",month:"เม.ย. 69",type:"ภาพนิ่ง",reach:117,clicks:6,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"25/04",month:"เม.ย. 69",type:"วิดีโอ",reach:223,clicks:9,vv3:69,reactions:2,comments:0,shares:1},
+  {date:"26/04",month:"เม.ย. 69",type:"วิดีโอ",reach:154,clicks:1,vv3:44,reactions:0,comments:0,shares:0},
+  {date:"30/04",month:"เม.ย. 69",type:"ภาพนิ่ง",reach:95,clicks:1,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"01/05",month:"พ.ค. 69",type:"วิดีโอ",reach:108,clicks:0,vv3:22,reactions:0,comments:0,shares:0},
+  {date:"03/05",month:"พ.ค. 69",type:"ภาพนิ่ง",reach:111,clicks:7,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"04/05",month:"พ.ค. 69",type:"ภาพนิ่ง",reach:48,clicks:0,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"04/05",month:"พ.ค. 69",type:"ภาพนิ่ง",reach:79,clicks:5,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"05/05",month:"พ.ค. 69",type:"วิดีโอ",reach:99,clicks:0,vv3:17,reactions:0,comments:0,shares:0},
+  {date:"06/05",month:"พ.ค. 69",type:"ภาพนิ่ง",reach:92,clicks:2,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"07/05",month:"พ.ค. 69",type:"วิดีโอ",reach:111,clicks:5,vv3:24,reactions:0,comments:0,shares:0},
+  {date:"08/05",month:"พ.ค. 69",type:"ภาพนิ่ง",reach:85,clicks:2,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"08/05",month:"พ.ค. 69",type:"ภาพนิ่ง",reach:117,clicks:2,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"09/05",month:"พ.ค. 69",type:"ภาพนิ่ง",reach:162,clicks:5,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"12/05",month:"พ.ค. 69",type:"วิดีโอ",reach:100,clicks:0,vv3:18,reactions:0,comments:0,shares:0},
+  {date:"13/05",month:"พ.ค. 69",type:"ภาพนิ่ง",reach:105,clicks:4,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"14/05",month:"พ.ค. 69",type:"ภาพนิ่ง",reach:122,clicks:5,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"14/05",month:"พ.ค. 69",type:"ภาพนิ่ง",reach:89,clicks:1,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"15/05",month:"พ.ค. 69",type:"ภาพนิ่ง",reach:98,clicks:9,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"17/05",month:"พ.ค. 69",type:"วิดีโอ",reach:157,clicks:1,vv3:35,reactions:0,comments:0,shares:0},
+  {date:"19/05",month:"พ.ค. 69",type:"ภาพนิ่ง",reach:107,clicks:2,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"20/05",month:"พ.ค. 69",type:"ภาพนิ่ง",reach:112,clicks:6,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"21/05",month:"พ.ค. 69",type:"ภาพนิ่ง",reach:57,clicks:2,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"21/05",month:"พ.ค. 69",type:"วิดีโอ",reach:74,clicks:1,vv3:8,reactions:0,comments:0,shares:0},
+  {date:"22/05",month:"พ.ค. 69",type:"ภาพนิ่ง",reach:96,clicks:0,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"23/05",month:"พ.ค. 69",type:"วิดีโอ",reach:167,clicks:4,vv3:37,reactions:4,comments:1,shares:0},
+  {date:"24/05",month:"พ.ค. 69",type:"วิดีโอ",reach:119,clicks:32,vv3:28,reactions:0,comments:0,shares:0},
+  {date:"25/05",month:"พ.ค. 69",type:"ภาพนิ่ง",reach:105,clicks:3,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"27/05",month:"พ.ค. 69",type:"ภาพนิ่ง",reach:106,clicks:3,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"29/05",month:"พ.ค. 69",type:"ภาพนิ่ง",reach:85,clicks:2,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"30/05",month:"พ.ค. 69",type:"ภาพนิ่ง",reach:134,clicks:2,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"01/06",month:"มิ.ย. 69",type:"ภาพนิ่ง",reach:90,clicks:0,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"02/06",month:"มิ.ย. 69",type:"วิดีโอ",reach:97,clicks:2,vv3:15,reactions:0,comments:0,shares:0},
+  {date:"03/06",month:"มิ.ย. 69",type:"ภาพนิ่ง",reach:71,clicks:1,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"04/06",month:"มิ.ย. 69",type:"วิดีโอ",reach:87,clicks:2,vv3:23,reactions:0,comments:0,shares:0},
+  {date:"05/06",month:"มิ.ย. 69",type:"ภาพนิ่ง",reach:88,clicks:2,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"06/06",month:"มิ.ย. 69",type:"วิดีโอ",reach:106,clicks:2,vv3:24,reactions:0,comments:0,shares:0},
+  {date:"07/06",month:"มิ.ย. 69",type:"ภาพนิ่ง",reach:119,clicks:2,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"08/06",month:"มิ.ย. 69",type:"ภาพนิ่ง",reach:98,clicks:3,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"10/06",month:"มิ.ย. 69",type:"ภาพนิ่ง",reach:106,clicks:0,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"11/06",month:"มิ.ย. 69",type:"วิดีโอ",reach:73,clicks:3,vv3:23,reactions:0,comments:1,shares:0},
+  {date:"11/06",month:"มิ.ย. 69",type:"ภาพนิ่ง",reach:79,clicks:7,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"12/06",month:"มิ.ย. 69",type:"ภาพนิ่ง",reach:61,clicks:0,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"12/06",month:"มิ.ย. 69",type:"ภาพนิ่ง",reach:132,clicks:9,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"14/06",month:"มิ.ย. 69",type:"ภาพนิ่ง",reach:133,clicks:1,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"15/06",month:"มิ.ย. 69",type:"ภาพนิ่ง",reach:113,clicks:4,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"17/06",month:"มิ.ย. 69",type:"วิดีโอ",reach:98,clicks:0,vv3:36,reactions:0,comments:0,shares:0},
+  {date:"18/06",month:"มิ.ย. 69",type:"ภาพนิ่ง",reach:119,clicks:1,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"19/06",month:"มิ.ย. 69",type:"ภาพนิ่ง",reach:123,clicks:5,vv3:0,reactions:0,comments:0,shares:0},
+  {date:"20/06",month:"มิ.ย. 69",type:"วิดีโอ",reach:103,clicks:5,vv3:25,reactions:0,comments:0,shares:0},
+  {date:"21/06",month:"มิ.ย. 69",type:"ภาพนิ่ง",reach:137,clicks:9,vv3:0,reactions:1,comments:0,shares:0},
+];
+
+const MONTHS = ['เม.ย. 69','พ.ค. 69','มิ.ย. 69'];
+
+// Aggregate per month per type
+const stats = {};
+MONTHS.forEach(m => { stats[m] = {img:{n:0,reach:0,clicks:0,vv3:0}, video:{n:0,reach:0,clicks:0,vv3:0}}; });
+POSTS.forEach(p => {
+  const k = p.type === 'วิดีโอ' ? 'video' : 'img';
+  if (!stats[p.month]) return;
+  stats[p.month][k].n++;
+  stats[p.month][k].reach  += p.reach;
+  stats[p.month][k].clicks += p.clicks;
+  stats[p.month][k].vv3    += p.vv3;
+});
+
+// ── Chart ──
+new Chart(document.getElementById('mainChart'), {
+  type: 'bar',
+  data: {
+    labels: MONTHS,
+    datasets: [
+      {
+        label: '🖼️ ภาพนิ่ง (โพสต์)',
+        data: MONTHS.map(m => stats[m].img.n),
+        backgroundColor: '#a5d6a7',
+        borderColor: '#2e7d32',
+        borderWidth: 1.5,
+        borderRadius: 6,
+        yAxisID: 'yPosts',
+        order: 2,
+      },
+      {
+        label: '🎬 วิดีโอ (โพสต์)',
+        data: MONTHS.map(m => stats[m].video.n),
+        backgroundColor: '#90caf9',
+        borderColor: '#1565c0',
+        borderWidth: 1.5,
+        borderRadius: 6,
+        yAxisID: 'yPosts',
+        order: 2,
+      },
+      {
+        label: '👥 Reach รวม',
+        data: MONTHS.map(m => stats[m].img.reach + stats[m].video.reach),
+        type: 'line',
+        borderColor: '#00897b',
+        backgroundColor: '#00897b18',
+        borderWidth: 2.5,
+        pointRadius: 6,
+        pointBackgroundColor: '#00897b',
+        tension: 0.3,
+        fill: true,
+        yAxisID: 'yReach',
+        order: 1,
+      },
+      {
+        label: '🖱️ Clicks รวม',
+        data: MONTHS.map(m => stats[m].img.clicks + stats[m].video.clicks),
+        type: 'line',
+        borderColor: '#f9a825',
+        backgroundColor: 'transparent',
+        borderWidth: 2,
+        borderDash: [5,4],
+        pointRadius: 5,
+        pointBackgroundColor: '#f9a825',
+        tension: 0.3,
+        fill: false,
+        yAxisID: 'yReach',
+        order: 1,
+      },
+    ]
+  },
+  options: {
+    responsive: true,
+    interaction: { mode:'index', intersect:false },
+    plugins: {
+      legend: { labels: { color:'#1b2e1b', boxWidth:14, padding:16, font:{size:12} } },
+      tooltip: {
+        backgroundColor:'#fff', borderColor:'#d8e8d8', borderWidth:1,
+        titleColor:'#1b2e1b', bodyColor:'#3a5a3a', padding:12,
+        callbacks: {
+          afterBody: (items) => {
+            const m = MONTHS[items[0].dataIndex];
+            const d = stats[m];
+            return [
+              '',
+              `── ภาพนิ่ง: Reach ${d.img.reach} · Clicks ${d.img.clicks}`,
+              `── วิดีโอ:  Reach ${d.video.reach} · Clicks ${d.video.clicks} · VV ${d.video.vv3}`,
+            ];
+          }
+        }
+      }
+    },
+    scales: {
+      yPosts: {
+        type:'linear', position:'left',
+        title:{ display:true, text:'จำนวนโพสต์', color:'#6a8f6a', font:{size:11} },
+        grid:{ color:'#e8f0e8' }, ticks:{ color:'#6a8f6a', stepSize:5 }, beginAtZero:true,
+      },
+      yReach: {
+        type:'linear', position:'right',
+        title:{ display:true, text:'Reach / Clicks', color:'#00897b', font:{size:11} },
+        grid:{ drawOnChartArea:false }, ticks:{ color:'#00897b' }, beginAtZero:true,
+      },
+      x: {
+        grid:{ color:'#e8f0e8' },
+        ticks:{ color:'#1b2e1b', font:{size:13, weight:'600'} }
+      }
+    }
+  }
+});
+
+// ── Table ──
+const tbody = document.getElementById('tBody');
+let tR=0,tC=0,tS=0,tReach=0,tClicks=0,tVV=0;
+POSTS.forEach(p => {
+  tR+=p.reactions; tC+=p.comments; tS+=p.shares;
+  tReach+=p.reach; tClicks+=p.clicks; tVV+=p.vv3;
+  const tk = p.type==='วิดีโอ'?'video':'img';
+  const mo = p.month.startsWith('เม')?'apr':p.month.startsWith('พ')?'may':'jun';
+  tbody.innerHTML += `
+    <tr>
+      <td>${p.date}</td>
+      <td><span class="tag month-${mo}">${p.month}</span></td>
+      <td><span class="tag ${tk}">${p.type==='วิดีโอ'?'🎬 วิดีโอ':'🖼️ ภาพ'}</span></td>
+      <td class="num-reach">${p.reach.toLocaleString()}</td>
+      <td class="num-click">${p.clicks.toLocaleString()}</td>
+      <td class="num-vv">${p.vv3 > 0 ? p.vv3.toLocaleString() : '—'}</td>
+      <td class="num-react">${p.reactions||'—'}</td>
+      <td>${p.comments||'—'}</td>
+      <td>${p.shares||'—'}</td>
+    </tr>`;
+});
+document.getElementById('tFoot').innerHTML = `
+  <tr>
+    <td colspan="3">รวมทั้งหมด (70 โพสต์)</td>
+    <td>${tReach.toLocaleString()}</td>
+    <td>${tClicks.toLocaleString()}</td>
+    <td>${tVV.toLocaleString()}</td>
+    <td>${tR}</td>
+    <td>${tC}</td>
+    <td>${tS}</td>
+  </tr>`;
+</script>
+</body>
+</html>
