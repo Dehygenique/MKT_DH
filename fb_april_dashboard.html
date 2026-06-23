@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Facebook เมษายน 2569 — DH Thailand</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg:    #0f1117;
+    --card:  #1a1d27;
+    --card2: #22263a;
+    --border:#2a2f4a;
+    --text:  #e8eaf0;
+    --muted: #7b82a0;
+    --fb:    #1877F2;
+    --react: #f5a623;
+    --comm:  #8be9fd;
+    --share: #50fa7b;
+    --video: #bd93f9;
+    --img:   #ff79c6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', 'Noto Sans Thai', sans-serif;
+    padding: 32px 24px 60px;
+  }
+
+  /* ── Header ── */
+  .header { text-align:center; margin-bottom:36px; }
+  .header h1 { font-size:1.8rem; font-weight:700; }
+  .header h1 span { color:var(--fb); }
+  .header p { color:var(--muted); margin-top:6px; font-size:.9rem; }
+  .badge {
+    display:inline-block; background:#1e2235;
+    border:1px solid var(--border); border-radius:20px;
+    padding:4px 16px; font-size:.78rem; color:var(--muted); margin-top:10px;
+  }
+
+  /* ── KPI Row ── */
+  .kpi-row {
+    display:grid; grid-template-columns:repeat(6,1fr);
+    gap:12px; margin-bottom:28px;
+  }
+  .kpi {
+    background:var(--card); border:1px solid var(--border);
+    border-radius:14px; padding:18px 12px; text-align:center;
+    position:relative; overflow:hidden;
+  }
+  .kpi::before {
+    content:''; position:absolute; top:0; left:0; right:0;
+    height:3px; border-radius:14px 14px 0 0;
+  }
+  .kpi.total::before  { background:var(--fb); }
+  .kpi.video::before  { background:var(--video); }
+  .kpi.img::before    { background:var(--img); }
+  .kpi.react::before  { background:var(--react); }
+  .kpi.comm::before   { background:var(--comm); }
+  .kpi.share::before  { background:var(--share); }
+  .kpi-icon  { font-size:1.4rem; margin-bottom:6px; }
+  .kpi-label { font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.7px; }
+  .kpi-num   { font-size:1.9rem; font-weight:700; margin:4px 0 2px; line-height:1; }
+  .kpi.total .kpi-num { color:var(--fb); }
+  .kpi.video .kpi-num { color:var(--video); }
+  .kpi.img   .kpi-num { color:var(--img); }
+  .kpi.react .kpi-num { color:var(--react); }
+  .kpi.comm  .kpi-num { color:var(--comm); }
+  .kpi.share .kpi-num { color:var(--share); }
+  .kpi-sub   { font-size:.72rem; color:var(--muted); }
+
+  /* ── Card ── */
+  .card {
+    background:var(--card); border:1px solid var(--border);
+    border-radius:16px; padding:24px; margin-bottom:20px;
+  }
+  .card-title {
+    font-size:.95rem; font-weight:600; color:#c5cadf;
+    display:flex; align-items:center; gap:8px; margin-bottom:20px;
+  }
+  .dot { width:8px; height:8px; border-radius:50%; display:inline-block; }
+
+  /* ── Chart wrapper ── */
+  .chart-wrap { position:relative; }
+
+  /* ── Table ── */
+  .tbl-wrap { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; font-size:.85rem; }
+  thead th {
+    background:var(--card2); color:var(--muted);
+    font-size:.72rem; text-transform:uppercase; letter-spacing:.6px;
+    padding:10px 12px; text-align:center;
+    border-bottom:1px solid var(--border);
+  }
+  thead th:first-child { text-align:left; }
+  tbody tr { border-bottom:1px solid var(--border); transition:background .12s; }
+  tbody tr:hover { background:var(--card2); }
+  tbody td { padding:10px 12px; text-align:center; vertical-align:middle; }
+  tbody td:first-child { text-align:left; }
+  tbody td:nth-child(2) { text-align:left; font-size:.8rem; color:#c5cadf; max-width:260px; }
+
+  .tag {
+    display:inline-block; border-radius:10px;
+    padding:2px 10px; font-size:.75rem; font-weight:600;
+  }
+  .tag.video { background:rgba(189,147,249,.2); color:var(--video); }
+  .tag.img   { background:rgba(255,121,198,.2); color:var(--img); }
+
+  .num-react { color:var(--react); font-weight:600; }
+  .num-comm  { color:var(--comm);  font-weight:600; }
+  .num-share { color:var(--share); font-weight:600; }
+  .num-total { color:#e8eaf0; font-weight:700; }
+
+  .viral-row { background:rgba(245,166,35,.06) !important; }
+  .viral-row td:first-child::after {
+    content:' 🔥'; font-size:.85rem;
+  }
+
+  /* ── Type summary boxes ── */
+  .type-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px; }
+  .type-box {
+    background:var(--card); border:1px solid var(--border);
+    border-radius:14px; padding:20px 18px;
+    display:flex; align-items:center; gap:16px;
+  }
+  .type-icon { font-size:2rem; }
+  .type-info { flex:1; }
+  .type-name { font-size:.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:.6px; }
+  .type-count { font-size:1.8rem; font-weight:700; margin:2px 0; }
+  .type-box.video .type-count { color:var(--video); }
+  .type-box.img   .type-count { color:var(--img); }
+  .type-sub { font-size:.78rem; color:var(--muted); }
+
+  /* footer */
+  .footer { text-align:center; color:var(--muted); font-size:.76rem; margin-top:32px; }
+
+  @media(max-width:800px) {
+    .kpi-row { grid-template-columns:repeat(3,1fr); }
+    .type-row { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <h1>📘 <span>Facebook</span> — เมษายน 2569</h1>
+  <p>De Hygienique Thailand · สรุปโพสต์ + Engagement รายโพสต์</p>
+  <span class="badge">01/04/2569 – 30/04/2569 &nbsp;·&nbsp; ข้อมูลจาก Meta Business Suite</span>
+</div>
+
+<!-- KPI CARDS -->
+<div class="kpi-row">
+  <div class="kpi total">
+    <div class="kpi-icon">📋</div>
+    <div class="kpi-label">โพสต์ทั้งหมด</div>
+    <div class="kpi-num">11</div>
+    <div class="kpi-sub">เมษายน 69</div>
+  </div>
+  <div class="kpi video">
+    <div class="kpi-icon">🎬</div>
+    <div class="kpi-label">วิดีโอ</div>
+    <div class="kpi-num">11</div>
+    <div class="kpi-sub">100%</div>
+  </div>
+  <div class="kpi img">
+    <div class="kpi-icon">🖼️</div>
+    <div class="kpi-label">ภาพนิ่ง</div>
+    <div class="kpi-num">0</div>
+    <div class="kpi-sub">0%</div>
+  </div>
+  <div class="kpi react">
+    <div class="kpi-icon">❤️</div>
+    <div class="kpi-label">ความรู้สึก</div>
+    <div class="kpi-num">4,486</div>
+    <div class="kpi-sub">รวมทั้งเดือน</div>
+  </div>
+  <div class="kpi comm">
+    <div class="kpi-icon">💬</div>
+    <div class="kpi-label">ความคิดเห็น</div>
+    <div class="kpi-num">25</div>
+    <div class="kpi-sub">รวมทั้งเดือน</div>
+  </div>
+  <div class="kpi share">
+    <div class="kpi-icon">🔗</div>
+    <div class="kpi-label">การแชร์</div>
+    <div class="kpi-num">92</div>
+    <div class="kpi-sub">รวมทั้งเดือน</div>
+  </div>
+</div>
+
+<!-- TYPE SUMMARY -->
+<div class="type-row">
+  <div class="type-box video">
+    <div class="type-icon">🎬</div>
+    <div class="type-info">
+      <div class="type-name">วิดีโอ</div>
+      <div class="type-count">11 โพสต์</div>
+      <div class="type-sub">❤️ 4,486 &nbsp;·&nbsp; 💬 25 &nbsp;·&nbsp; 🔗 92 &nbsp;·&nbsp; รวม 4,603 engagement</div>
+    </div>
+  </div>
+  <div class="type-box img">
+    <div class="type-icon">🖼️</div>
+    <div class="type-info">
+      <div class="type-name">ภาพนิ่ง</div>
+      <div class="type-count">0 โพสต์</div>
+      <div class="type-sub">ไม่มีโพสต์ภาพนิ่งในเดือนนี้</div>
+    </div>
+  </div>
+</div>
+
+<!-- CHART -->
+<div class="card">
+  <div class="card-title">
+    <span class="dot" style="background:#f5a623"></span>
+    Engagement รายโพสต์ — ความรู้สึก / ความคิดเห็น / การแชร์
+    <span style="font-size:.75rem;color:#7b82a0;margin-left:auto">🔥 17/04 = Viral</span>
+  </div>
+  <div class="chart-wrap">
+    <canvas id="mainChart" height="110"></canvas>
+  </div>
+</div>
+
+<!-- TABLE -->
+<div class="card">
+  <div class="card-title"><span class="dot" style="background:#8be9fd"></span>รายละเอียดทุกโพสต์</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>วันที่</th>
+          <th style="text-align:left">หัวข้อ / เนื้อหา</th>
+          <th>ประเภท</th>
+          <th>❤️ ความรู้สึก</th>
+          <th>💬 ความคิดเห็น</th>
+          <th>🔗 การแชร์</th>
+          <th>รวม Engagement</th>
+        </tr>
+      </thead>
+      <tbody id="postTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="footer">
+  DH Thailand · Facebook April 2026 Dashboard · ข้อมูล: Meta Business Suite Export
+</div>
+
+<script>
+const POSTS = [
+  {date:"03/04",type:"วิดีโอ",title:"ดี ไฮจีนิค ร่วมเปิดตัวที่นอนระดับแชมป์ สู่...",reactions:18,comments:0,shares:4},
+  {date:"03/04",type:"วิดีโอ",title:"คุณจ๊อบ ธัชพล กู้วงศ์บัณฑิต เป็นนักแสดงชาวไทย...",reactions:16,comments:0,shares:3},
+  {date:"06/04",type:"วิดีโอ",title:"ดี ไฮจีนิค ขอขอบคุณ Saengkhae Flagship Store...",reactions:17,comments:1,shares:4},
+  {date:"12/04",type:"วิดีโอ",title:"สุขสันต์วันสงกรานต์ 💙 เทศกาลแห่งการเริ่มต้น...",reactions:19,comments:0,shares:2},
+  {date:"17/04",type:"วิดีโอ",title:"คุณอาจไม่ได้ป่วย…เพราะร่างกายอ่อนแอ แต่กำลังป่วย...",reactions:3381,comments:13,shares:39,viral:true},
+  {date:"18/04",type:"วิดีโอ",title:"De Hygienique ร่วมมือกับ สำนักงานใหญ่ธนาคารยู...",reactions:16,comments:2,shares:5},
+  {date:"21/04",type:"วิดีโอ",title:"Sound Scent Space นิยามใหม่ของการพักผ่อน...",reactions:11,comments:0,shares:1},
+  {date:"21/04",type:"วิดีโอ",title:"ดี ไฮจีนิค ส่งมอบรอยยิ้มให้กับน้องๆ ณ โรงเรียน...",reactions:22,comments:0,shares:2},
+  {date:"24/04",type:"วิดีโอ",title:"คุณแน่ใจได้อย่างไร... ว่าการนอน 6-8 ชม. ของคุณ...",reactions:956,comments:9,shares:27,viral:true},
+  {date:"25/04",type:"วิดีโอ",title:"คุณเอ็ม อภินันท์ มั่นใจ‼ เลือกใช้บริการทำความ...",reactions:15,comments:0,shares:2},
+  {date:"30/04",type:"วิดีโอ",title:"คืนนี้…คุณกำลังนอนพักผ่อน หรือกำลังนอนทับ สิ่ง...",reactions:15,comments:0,shares:3},
+];
+
+// ── Chart ──
+const labels = POSTS.map(p => p.date + (p.viral ? ' 🔥':''));
+const colors = { react:'#f5a623', comm:'#8be9fd', share:'#50fa7b' };
+
+new Chart(document.getElementById('mainChart'), {
+  type: 'bar',
+  data: {
+    labels,
+    datasets: [
+      {
+        label: '❤️ ความรู้สึก',
+        data: POSTS.map(p => p.reactions),
+        backgroundColor: POSTS.map(p => p.viral ? '#f5a623' : '#f5a62388'),
+        borderRadius: 4,
+        borderSkipped: false,
+        stack: 'engagement',
+      },
+      {
+        label: '💬 ความคิดเห็น',
+        data: POSTS.map(p => p.comments),
+        backgroundColor: '#8be9fdaa',
+        borderRadius: 4,
+        borderSkipped: false,
+        stack: 'engagement',
+      },
+      {
+        label: '🔗 การแชร์',
+        data: POSTS.map(p => p.shares),
+        backgroundColor: '#50fa7baa',
+        borderRadius: 4,
+        borderSkipped: false,
+        stack: 'engagement',
+      },
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        labels: { color:'#c5cadf', boxWidth:14, padding:16, font:{size:12} }
+      },
+      tooltip: {
+        backgroundColor:'#1a1d27', borderColor:'#2a2f4a', borderWidth:1,
+        titleColor:'#e8eaf0', bodyColor:'#c5cadf', padding:10,
+        callbacks: {
+          afterTitle: (items) => {
+            const i = items[0].dataIndex;
+            return POSTS[i].title;
+          },
+          footer: (items) => {
+            const i = items[0].dataIndex;
+            const p = POSTS[i];
+            const total = p.reactions + p.comments + p.shares;
+            return `รวม Engagement: ${total.toLocaleString()}`;
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        stacked: true,
+        grid: { color:'#2a2f4a' },
+        ticks: { color:'#c5cadf', font:{size:11} }
+      },
+      y: {
+        stacked: true,
+        grid: { color:'#2a2f4a' },
+        ticks: {
+          color:'#7b82a0',
+          callback: v => v >= 1000 ? (v/1000).toFixed(1)+'K' : v
+        },
+        beginAtZero: true
+      }
+    }
+  }
+});
+
+// ── Table ──
+const tbody = document.getElementById('postTable');
+POSTS.forEach(p => {
+  const total = p.reactions + p.comments + p.shares;
+  const typeTag = `<span class="tag ${p.type==='วิดีโอ'?'video':'img'}">${p.type==='วิดีโอ'?'🎬 วิดีโอ':'🖼️ ภาพ'}</span>`;
+  tbody.innerHTML += `
+    <tr ${p.viral ? 'class="viral-row"':''}>
+      <td style="color:#7b82a0;white-space:nowrap">${p.date}</td>
+      <td>${p.title}${p.viral?' <span style="color:#f5a623;font-size:.75rem">🔥 Viral</span>':''}</td>
+      <td>${typeTag}</td>
+      <td class="num-react">${p.reactions.toLocaleString()}</td>
+      <td class="num-comm">${p.comments.toLocaleString()}</td>
+      <td class="num-share">${p.shares.toLocaleString()}</td>
+      <td class="num-total">${total.toLocaleString()}</td>
+    </tr>`;
+});
+</script>
+</body>
+</html>
