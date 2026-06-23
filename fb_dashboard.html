@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Facebook Dashboard — DH Thailand เม.ย.–มิ.ย. 69</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg:      #f4f7f4;
+    --white:   #ffffff;
+    --border:  #d8e8d8;
+    --green1:  #2e7d32;
+    --green2:  #43a047;
+    --green3:  #81c784;
+    --green4:  #c8e6c9;
+    --green5:  #e8f5e9;
+    --img:     #2e7d32;
+    --video:   #1565c0;
+    --link:    #e65100;
+    --react:   #e53935;
+    --comm:    #f9a825;
+    --share:   #00897b;
+    --text:    #1b2e1b;
+    --muted:   #6a8f6a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', 'Noto Sans Thai', sans-serif;
+    padding: 32px 28px 64px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* ── Header ── */
+  .header {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .header-icon {
+    width: 56px; height: 56px;
+    background: var(--green5);
+    border: 2px solid var(--green3);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem; flex-shrink: 0;
+  }
+  .header h1 { font-size: 1.5rem; font-weight: 700; color: var(--green1); }
+  .header p  { color: var(--muted); font-size: .9rem; margin-top: 3px; }
+  .badge {
+    margin-left: auto;
+    background: var(--green5);
+    border: 1px solid var(--green4);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: .78rem;
+    color: var(--green1);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* ── KPI grid ── */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .kpi {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 14px;
+    text-align: center;
+  }
+  .kpi-icon  { font-size: 1.5rem; margin-bottom: 6px; }
+  .kpi-label { font-size: .7rem; color: var(--muted); text-transform: uppercase; letter-spacing: .7px; }
+  .kpi-num   { font-size: 1.8rem; font-weight: 700; margin: 4px 0 2px; line-height: 1; color: var(--green1); }
+  .kpi-num.blue  { color: var(--video); }
+  .kpi-num.red   { color: var(--react); }
+  .kpi-num.amber { color: var(--comm); }
+  .kpi-num.teal  { color: var(--share); }
+  .kpi-sub   { font-size: .71rem; color: var(--muted); }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .card-title {
+    font-size: .95rem; font-weight: 700;
+    color: var(--green1);
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 20px;
+  }
+  .card-title .ico { font-size: 1.1rem; }
+
+  /* ── Type summary ── */
+  .type-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 20px; }
+  .type-box {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 16px;
+    display: flex; gap: 14px; align-items: center;
+  }
+  .type-box .ico { font-size: 1.8rem; }
+  .type-name  { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; }
+  .type-count { font-size: 1.5rem; font-weight: 700; margin: 2px 0; }
+  .type-count.green { color: var(--img); }
+  .type-count.blue  { color: var(--video); }
+  .type-count.orange{ color: var(--link); }
+  .type-eng   { font-size: .76rem; color: var(--muted); line-height: 1.6; }
+  .type-eng b { color: var(--text); }
+
+  /* ── Table ── */
+  .tbl-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .84rem; }
+  thead th {
+    background: var(--green5);
+    color: var(--green1);
+    font-size: .72rem; text-transform: uppercase;
+    letter-spacing: .6px; font-weight: 700;
+    padding: 10px 12px; text-align: center;
+    border-bottom: 2px solid var(--green4);
+  }
+  thead th:first-child { text-align: left; border-radius: 8px 0 0 0; }
+  thead th:nth-child(2){ text-align: left; }
+  thead th:last-child  { border-radius: 0 8px 0 0; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
+  tbody tr:hover { background: var(--green5); }
+  tbody td { padding: 10px 12px; text-align: center; vertical-align: middle; }
+  tbody td:first-child  { text-align: left; color: var(--muted); font-size: .8rem; white-space: nowrap; }
+  tbody td:nth-child(2) { text-align: left; color: var(--text); font-size: .81rem; max-width: 280px; }
+  tfoot td {
+    padding: 10px 12px; text-align: center;
+    background: var(--green5); font-weight: 700;
+    border-top: 2px solid var(--green4); color: var(--green1);
+  }
+  tfoot td:first-child { text-align: left; }
+
+  .tag {
+    display: inline-block; border-radius: 10px;
+    padding: 2px 9px; font-size: .73rem; font-weight: 600;
+  }
+  .tag.img   { background: #e8f5e9; color: var(--img); }
+  .tag.video { background: #e3f2fd; color: var(--video); }
+  .tag.link  { background: #fff3e0; color: var(--link); }
+  .tag.month-apr { background: #e8f5e9; color: #2e7d32; }
+  .tag.month-may { background: #e3f2fd; color: #1565c0; }
+  .tag.month-jun { background: #fff3e0; color: #e65100; }
+
+  .num-r { color: var(--react);  font-weight: 600; }
+  .num-c { color: var(--comm);   font-weight: 600; }
+  .num-s { color: var(--share);  font-weight: 600; }
+  .num-t { color: var(--green1); font-weight: 700; }
+
+  .viral td:nth-child(2)::after { content: ' 🔥'; }
+  .viral { background: #fff8e1 !important; }
+
+  /* ── Footer ── */
+  .footer { text-align: center; color: var(--muted); font-size: .76rem; margin-top: 8px; }
+
+  @media(max-width:900px) {
+    .kpi-row { grid-template-columns: repeat(3,1fr); }
+    .type-row { grid-template-columns: 1fr 1fr; }
+    .badge { display: none; }
+  }
+  @media(max-width:560px) {
+    .kpi-row { grid-template-columns: repeat(2,1fr); }
+    .type-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-icon">📘</div>
+  <div>
+    <h1>Facebook — De Hygienique Thailand</h1>
+    <p>สรุปการโพสต์ + Engagement รายโพสต์ แยกตามประเภท</p>
+  </div>
+  <span class="badge">📅 เม.ย.–มิ.ย. 2569 &nbsp;|&nbsp; Meta Business Suite</span>
+</div>
+
+<!-- KPI -->
+<div class="kpi-row">
+  <div class="kpi">
+    <div class="kpi-icon">📋</div>
+    <div class="kpi-label">โพสต์ทั้งหมด</div>
+    <div class="kpi-num">83</div>
+    <div class="kpi-sub">3 เดือน</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-icon">🖼️</div>
+    <div class="kpi-label">ภาพนิ่ง</div>
+    <div class="kpi-num">56</div>
+    <div class="kpi-sub">67.5%</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-icon">🎬</div>
+    <div class="kpi-label">วิดีโอ</div>
+    <div class="kpi-num blue">25</div>
+    <div class="kpi-sub">30.1%</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-icon">❤️</div>
+    <div class="kpi-label">ความรู้สึก</div>
+    <div class="kpi-num red">9,136</div>
+    <div class="kpi-sub">รวม 3 เดือน</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-icon">💬</div>
+    <div class="kpi-label">ความคิดเห็น</div>
+    <div class="kpi-num amber">399</div>
+    <div class="kpi-sub">รวม 3 เดือน</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-icon">🔗</div>
+    <div class="kpi-label">การแชร์</div>
+    <div class="kpi-num teal">621</div>
+    <div class="kpi-sub">รวม 3 เดือน</div>
+  </div>
+</div>
+
+<!-- TYPE SUMMARY -->
+<div class="type-row">
+  <div class="type-box">
+    <div class="ico">🖼️</div>
+    <div>
+      <div class="type-name">ภาพนิ่ง (Photo)</div>
+      <div class="type-count green">56 โพสต์</div>
+      <div class="type-eng">
+        ❤️ <b>2,556</b> &nbsp;💬 <b>366</b> &nbsp;🔗 <b>466</b><br>
+        รวม Engagement <b>3,388</b>
+      </div>
+    </div>
+  </div>
+  <div class="type-box">
+    <div class="ico">🎬</div>
+    <div>
+      <div class="type-name">วิดีโอ (Video)</div>
+      <div class="type-count blue">25 โพสต์</div>
+      <div class="type-eng">
+        ❤️ <b>6,547</b> &nbsp;💬 <b>32</b> &nbsp;🔗 <b>150</b><br>
+        รวม Engagement <b>6,729</b>
+      </div>
+    </div>
+  </div>
+  <div class="type-box">
+    <div class="ico">🔗</div>
+    <div>
+      <div class="type-name">ลิงก์ (Link)</div>
+      <div class="type-count orange">2 โพสต์</div>
+      <div class="type-eng">
+        ❤️ <b>33</b> &nbsp;💬 <b>1</b> &nbsp;🔗 <b>8</b><br>
+        รวม Engagement <b>42</b>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHART -->
+<div class="card">
+  <div class="card-title">
+    <span class="ico">📊</span>
+    จำนวนโพสต์ vs Engagement รวม — แยกตามเดือนและประเภท
+  </div>
+  <canvas id="mainChart" height="90"></canvas>
+</div>
+
+<!-- TABLE -->
+<div class="card">
+  <div class="card-title"><span class="ico">📄</span>รายละเอียดทุกโพสต์ (83 โพสต์)</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>วันที่</th>
+          <th>หัวข้อ / เนื้อหา</th>
+          <th>เดือน</th>
+          <th>ประเภท</th>
+          <th>❤️ ความรู้สึก</th>
+          <th>💬 ความคิดเห็น</th>
+          <th>🔗 การแชร์</th>
+          <th>รวม Eng.</th>
+        </tr>
+      </thead>
+      <tbody id="tBody"></tbody>
+      <tfoot id="tFoot"></tfoot>
+    </table>
+  </div>
+</div>
+
+<div class="footer">
+  De Hygienique Thailand · Facebook Apr–Jun 2026 · ข้อมูล: Meta Business Suite Export
+</div>
+
+<script>
+const POSTS = [
+  {date:"01/04",month:"เม.ย. 69",type:"รูปภาพ",title:"สถานการณ์ฝุ่น PM 2.5 ช่วงนี้ทำเอาเครียด!",reactions:13,comments:0,shares:1},
+  {date:"01/04",month:"เม.ย. 69",type:"ลิงก์",title:"De Hygienique ผนึก สมิติเวชธนบุรี ยกระดับมาตรฐานดูแลที่นอน",reactions:17,comments:1,shares:5},
+  {date:"01/04",month:"เม.ย. 69",type:"รูปภาพ",title:"๒ เมษายน วันคล้ายวันพระราชสมภพ สมเด็จพระกนิษฐาธิราชเจ้า",reactions:11,comments:0,shares:0},
+  {date:"01/04",month:"เม.ย. 69",type:"รูปภาพ",title:"แดดแรง…ไม่ได้หยุดแค่หน้าบ้าน ☀️ รังสี UV สามารถทะลุกระจก",reactions:8,comments:0,shares:2},
+  {date:"02/04",month:"เม.ย. 69",type:"รูปภาพ",title:"ดี ไฮจีนิค ชวนเล่นกิจกรรม คืนนี้...คุณอยากนอน...",reactions:263,comments:290,shares:257,viral:true},
+  {date:"02/04",month:"เม.ย. 69",type:"รูปภาพ",title:"คุณทำความสะอาดทุกอย่างในบ้าน แต่ที่นอน ล่ะ…คุณมั่นใจ",reactions:16,comments:0,shares:3},
+  {date:"03/04",month:"เม.ย. 69",type:"วิดีโอ",title:"ดี ไฮจีนิค ร่วมเปิดตัวที่นอนระดับแชมป์ สู่ใจกลางเมือง",reactions:18,comments:0,shares:4},
+  {date:"03/04",month:"เม.ย. 69",type:"วิดีโอ",title:"คุณจ๊อบ ธัชพล กู้วงศ์บัณฑิต นักแสดงชาวไทย มีความสนใจ",reactions:16,comments:0,shares:3},
+  {date:"04/04",month:"เม.ย. 69",type:"รูปภาพ",title:"เทศกาลแห่งความสุขของคนไทยใกล้เข้ามาทุกที #วันสงกรานต์",reactions:13,comments:0,shares:2},
+  {date:"06/04",month:"เม.ย. 69",type:"วิดีโอ",title:"ดี ไฮจีนิค ขอขอบคุณ Saengkhae Flagship Store ที่ไว้ใจ",reactions:17,comments:1,shares:4},
+  {date:"07/04",month:"เม.ย. 69",type:"รูปภาพ",title:"ดูแลสุขภาพการนอนของคุณ พร้อมรับสิทธิ์ลิ้มรสความสุขระดับ",reactions:15,comments:0,shares:3},
+  {date:"08/04",month:"เม.ย. 69",type:"รูปภาพ",title:"ถึงแม้ว่าคุณจะนำรถเข้าศูนย์เช็กระยะ ตรวจสภาพรถยนต์อย่างดี",reactions:11,comments:0,shares:1},
+  {date:"09/04",month:"เม.ย. 69",type:"ลิงก์",title:"ยุคที่ผู้บริโภคหันมาให้ความสำคัญกับสุขภาพเชิงป้องกัน",reactions:16,comments:0,shares:3},
+  {date:"09/04",month:"เม.ย. 69",type:"รูปภาพ",title:"เชื่อว่าหลายๆ คนคงรู้สึกถึงอากาศอันร้อนระอุ 🔥 ช่วงนี้",reactions:16,comments:0,shares:2},
+  {date:"10/04",month:"เม.ย. 69",type:"รูปภาพ",title:"#ฮีทสโตรก และ #โรคลมแดด (Heatstroke) คือโรคอันตราย",reactions:12,comments:0,shares:3},
+  {date:"11/04",month:"เม.ย. 69",type:"รูปภาพ",title:"กระแตศุภักษร เริ่มต้นเข้าสู่วงการบันเทิงจากการประกวดเวที",reactions:13,comments:0,shares:1},
+  {date:"12/04",month:"เม.ย. 69",type:"วิดีโอ",title:"สุขสันต์วันสงกรานต์ 💙 เทศกาลแห่งการเริ่มต้นใหม่",reactions:19,comments:0,shares:2},
+  {date:"13/04",month:"เม.ย. 69",type:"รูปภาพ",title:"เพราะ ครอบครัว คือพื้นที่ที่เราอยากให้ปลอดภัยที่สุด",reactions:8,comments:0,shares:1},
+  {date:"14/04",month:"เม.ย. 69",type:"รูปภาพ",title:"เพราะคราบแป้ง…ไม่ใช่แค่สกปรก แต่อาจกัดกินผิวรถแบบที่คุณ",reactions:10,comments:0,shares:3},
+  {date:"16/04",month:"เม.ย. 69",type:"รูปภาพ",title:"คุณอาจคิดว่า…แค่ร้อน เดี๋ยวก็หาย ☀️ แต่สำหรับบางคน",reactions:11,comments:1,shares:3},
+  {date:"17/04",month:"เม.ย. 69",type:"วิดีโอ",title:"คุณอาจไม่ได้ป่วย…เพราะร่างกายอ่อนแอ แต่กำลังป่วย…เพราะที่นอน",reactions:3663,comments:14,shares:47,viral:true},
+  {date:"18/04",month:"เม.ย. 69",type:"วิดีโอ",title:"De Hygienique ร่วมมือกับ สำนักงานใหญ่ธนาคารยูโอบี",reactions:16,comments:2,shares:5},
+  {date:"21/04",month:"เม.ย. 69",type:"วิดีโอ",title:"Sound Scent Space นิยามใหม่ของการพักผ่อน",reactions:11,comments:0,shares:1},
+  {date:"21/04",month:"เม.ย. 69",type:"วิดีโอ",title:"ดี ไฮจีนิค ส่งมอบรอยยิ้มให้กับน้องๆ ณ โรงเรียนบ้านเด็ก",reactions:22,comments:0,shares:2},
+  {date:"23/04",month:"เม.ย. 69",type:"รูปภาพ",title:"กลิ่นหอมสามารถกระตุ้นสมองส่วนอารมณ์ (Limbic System)",reactions:15,comments:0,shares:4},
+  {date:"24/04",month:"เม.ย. 69",type:"วิดีโอ",title:"คุณแน่ใจได้อย่างไร... ว่าการนอน 6-8 ชม. ของคุณ คือการพัก",reactions:958,comments:9,shares:27,viral:true},
+  {date:"25/04",month:"เม.ย. 69",type:"วิดีโอ",title:"คุณเอ็ม อภินันท์ มั่นใจ‼ เลือกใช้บริการทำความสะอาดฆ่าเชื้อ",reactions:15,comments:0,shares:2},
+  {date:"27/04",month:"เม.ย. 69",type:"รูปภาพ",title:"คุณทำความสะอาดทุกอย่างในบ้าน แต่ที่นอน ล่ะ…คุณมั่นใจ (2)",reactions:9,comments:5,shares:4},
+  {date:"29/04",month:"เม.ย. 69",type:"รูปภาพ",title:"🛏️ ที่นอนที่ดี...ต้องเหมาะกับ รูปร่าง ของคุณ!",reactions:13,comments:0,shares:3},
+  {date:"30/04",month:"เม.ย. 69",type:"วิดีโอ",title:"คืนนี้…คุณกำลังนอนพักผ่อน หรือกำลังนอนทับ สิ่งที่มองไม่เห็น",reactions:15,comments:0,shares:3},
+  {date:"02/05",month:"พ.ค. 69",type:"รูปภาพ",title:"CONDO MUNIQ LANGSUAN คอนโดใจกลางเมืองที่มีจุดเด่น",reactions:14,comments:0,shares:4},
+  {date:"03/05",month:"พ.ค. 69",type:"รูปภาพ",title:"เนื่องในโอกาสวันฉัตรมงคล ๔ พฤษภาคม ๒๕๖๙ ทรงพระเจริญ",reactions:12,comments:1,shares:2},
+  {date:"04/05",month:"พ.ค. 69",type:"วิดีโอ",title:"คุณป้องกันฝุ่น PM 2.5 นอกบ้านได้ แต่รู้ไหม อันตรายยังอยู่ข้างใน",reactions:18,comments:1,shares:3},
+  {date:"05/05",month:"พ.ค. 69",type:"รูปภาพ",title:"Mobilia FlexyLiving หลังจากประสบการณ์ 22 ปีในธุรกิจ",reactions:8,comments:1,shares:2},
+  {date:"07/05",month:"พ.ค. 69",type:"วิดีโอ",title:"ทุกคืนที่คุณนอนหลับ… อาจมีบางอย่างกำลังเติบโตอยู่ใต้ที่นอน",reactions:12,comments:0,shares:1},
+  {date:"07/05",month:"พ.ค. 69",type:"รูปภาพ",title:"#พรม เป็นเฟอร์นิเจอร์ที่ช่วยเพิ่มความสวยงาม ความอบอุ่น",reactions:5,comments:0,shares:0},
+  {date:"08/05",month:"พ.ค. 69",type:"รูปภาพ",title:"ค่ำคืนของ แชมป์ …เริ่มต้นจากการพักผ่อนที่สมบูรณ์แบบ",reactions:371,comments:8,shares:28,viral:true},
+  {date:"08/05",month:"พ.ค. 69",type:"รูปภาพ",title:"ช่วงนี้กลายเป็นคนหลับยาก🥱 มีปัญหากับการนอนจนกระทบชีวิต",reactions:13,comments:0,shares:3},
+  {date:"11/05",month:"พ.ค. 69",type:"วิดีโอ",title:"คุณกำลังกอดความรัก…หรือกำลังกอด ความเสี่ยง โดยไม่รู้ตัว",reactions:1587,comments:2,shares:17,viral:true},
+  {date:"13/05",month:"พ.ค. 69",type:"รูปภาพ",title:"หนู ที่คุณเห็นวิ่งผ่านบ้าน… อาจไม่ได้ทิ้งไว้แค่ความสกปรก",reactions:14,comments:0,shares:3},
+  {date:"13/05",month:"พ.ค. 69",type:"รูปภาพ",title:"GEN Y บอกว่า…กลิ่นนี้ช่วยให้ผ่อนคลาย 😌 แต่ GEN Z บอกว่า",reactions:14,comments:2,shares:2},
+  {date:"14/05",month:"พ.ค. 69",type:"รูปภาพ",title:"เพราะ สุขภาพที่ดี คือพื้นฐานสำคัญของการเรียนรู้ 💚",reactions:14,comments:0,shares:2},
+  {date:"14/05",month:"พ.ค. 69",type:"รูปภาพ",title:"บางคืน…คุณไม่ได้ตื่นเพราะฝันร้าย แต่ตื่นเพราะที่นอน",reactions:8,comments:5,shares:1},
+  {date:"14/05",month:"พ.ค. 69",type:"รูปภาพ",title:"เมื่อเข้าสู่ช่วง #หน้าฝน หลายคนอาจเริ่มมีอาการจาม คัดจมูก",reactions:1174,comments:44,shares:50,viral:true},
+  {date:"16/05",month:"พ.ค. 69",type:"รูปภาพ",title:"ขอแสดงความเสียใจอย่างสุดซึ้งต่อเหตุการณ์ที่เกิดขึ้น",reactions:12,comments:3,shares:0},
+  {date:"16/05",month:"พ.ค. 69",type:"วิดีโอ",title:"คุณหนิง ศรัยฉัตร มั่นใจ‼ เลือกใช้บริการทำความสะอาดฆ่าเชื้อ",reactions:18,comments:0,shares:1},
+  {date:"18/05",month:"พ.ค. 69",type:"รูปภาพ",title:"⚠️ โรคฉี่หนู ไม่ใช่แค่ปวดเมื่อย...แต่อาจพาไปถึงห้อง ICU",reactions:7,comments:0,shares:0},
+  {date:"19/05",month:"พ.ค. 69",type:"รูปภาพ",title:"เปลี่ยนกลิ่นธรรมดา ให้กลายเป็น เอกลักษณ์ ของธุรกิจคุณ",reactions:14,comments:0,shares:3},
+  {date:"20/05",month:"พ.ค. 69",type:"รูปภาพ",title:"เปลี่ยนทุกก้าวที่คุณวิ่ง…ให้กลายเป็นสุขภาพการนอนที่ดีกว่าเดิม",reactions:36,comments:1,shares:13},
+  {date:"20/05",month:"พ.ค. 69",type:"รูปภาพ",title:"เปิดเทอมนี้… อย่าลืมดูแล ที่นอน ที่ลูกใช้พักผ่อนทุกคืน",reactions:169,comments:0,shares:5},
+  {date:"21/05",month:"พ.ค. 69",type:"วิดีโอ",title:"กว่า 40 ปีที่ชื่อของ เพชรยินดี ถูกจารึกในวงการมวยไทย",reactions:15,comments:0,shares:3},
+  {date:"21/05",month:"พ.ค. 69",type:"รูปภาพ",title:"เมื่อฤดูฝนมาเยือน หลายคนอาจรู้สึกสดชื่นกับอากาศเย็นสบาย",reactions:7,comments:0,shares:2},
+  {date:"23/05",month:"พ.ค. 69",type:"วิดีโอ",title:"ขอแสดงความยินดีกับ สโมสร บุรีรัมย์ ยูไนเต็ด สร้างประวัติศาสตร์",reactions:23,comments:0,shares:2},
+  {date:"23/05",month:"พ.ค. 69",type:"วิดีโอ",title:"คุณบดินทร์ เจริญราษฎร์ หรือ คุณเป้ วงมายด์ มีเอกลักษณ์",reactions:10,comments:0,shares:2},
+  {date:"24/05",month:"พ.ค. 69",type:"รูปภาพ",title:"ฉีด 2 ที... หลับดีถึงเช้า 💤 จบปัญหานอนหลับไม่เต็มอิ่ม!",reactions:18,comments:0,shares:5},
+  {date:"25/05",month:"พ.ค. 69",type:"วิดีโอ",title:"ดี ไฮจีนิค ยืนหนึ่ง‼ ด้านบริการทำความสะอาดพร้อมฟื้นฟู",reactions:0,comments:0,shares:0},
+  {date:"27/05",month:"พ.ค. 69",type:"รูปภาพ",title:"โควิด NB.1.8.1 สายพันธุ์ย่อยของโอมิครอนวิวัฒนาการมาจาก",reactions:8,comments:0,shares:3},
+  {date:"28/05",month:"พ.ค. 69",type:"รูปภาพ",title:"ปัญหา #ห้องเหม็นอับ โดยเฉพาะในห้องนอน 😵 ถือเป็นปัญหาใหญ่",reactions:8,comments:0,shares:2},
+  {date:"29/05",month:"พ.ค. 69",type:"รูปภาพ",title:"ลูกป่วยบ่อย...อย่ามองข้าม ผ้าม่าน ใกล้ตัว! 👶💨",reactions:12,comments:0,shares:3},
+  {date:"30/05",month:"พ.ค. 69",type:"รูปภาพ",title:"วันวิสาขบูชา ตรงกับวันเพ็ญขึ้น 15 ค่ำ เดือน 6",reactions:9,comments:0,shares:0},
+  {date:"31/05",month:"พ.ค. 69",type:"รูปภาพ",title:"🌧️ หน้าฝนมาแล้ว อย่าปล่อยให้ โรคตาแดง มาเยือน!",reactions:5,comments:0,shares:3},
+  {date:"01/06",month:"มิ.ย. 69",type:"วิดีโอ",title:"เบื้องหลังของทุกความสำเร็จ คือการพักผ่อนที่มีคุณภาพในที่นอน",reactions:16,comments:1,shares:2},
+  {date:"02/06",month:"มิ.ย. 69",type:"รูปภาพ",title:"๓ มิถุนายน เนื่องในโอกาสวันเฉลิมพระชนมพรรษา ทรงพระเจริญ",reactions:14,comments:1,shares:1},
+  {date:"03/06",month:"มิ.ย. 69",type:"วิดีโอ",title:"คุณเก๋ ชลลดา มั่นใจ‼ เลือกใช้บริการทำความสะอาดฆ่าเชื้อโรค",reactions:9,comments:0,shares:1},
+  {date:"04/06",month:"มิ.ย. 69",type:"รูปภาพ",title:"🌧️ หน้าฝนนี้…อย่าให้ ภูมิแพ้ ครองบ้าน! อากาศชื้น ฝุ่น",reactions:7,comments:0,shares:2},
+  {date:"05/06",month:"มิ.ย. 69",type:"วิดีโอ",title:"เพราะที่นอนคือแหล่งสะสมฝุ่น แบคทีเรีย และไรฝุ่นตัวจิ๋ว",reactions:18,comments:0,shares:3},
+  {date:"06/06",month:"มิ.ย. 69",type:"รูปภาพ",title:"สัมผัสใหม่ของความสะอาด ✨ De Hygienique ร่วมกับ Chaw Cheng",reactions:12,comments:0,shares:2},
+  {date:"07/06",month:"มิ.ย. 69",type:"รูปภาพ",title:"ฝนตกหนักไม่เท่าไหร่…แต่เชื้อรานี่สิ โตเร็วไม่เกรงใจปอด!",reactions:8,comments:0,shares:3},
+  {date:"09/06",month:"มิ.ย. 69",type:"รูปภาพ",title:"🦟 ยุงลาย ภัยเงียบที่มากับสายฝน 🌧️ หน้าฝนคือช่วงที่",reactions:10,comments:0,shares:4},
+  {date:"10/06",month:"มิ.ย. 69",type:"วิดีโอ",title:"คุณนาตาลี เดวิส มั่นใจ‼ เลือกใช้บริการทำความสะอาดฆ่าเชื้อ",reactions:18,comments:1,shares:1},
+  {date:"11/06",month:"มิ.ย. 69",type:"รูปภาพ",title:"🏌️ ขอแสดงความยินดีกับ โปรเมียว ปาจรีย์ อนันต์นฤการ",reactions:14,comments:0,shares:7},
+  {date:"11/06",month:"มิ.ย. 69",type:"รูปภาพ",title:"ขอน้อมเกล้าน้อมกระหม่อมส่งเสด็จสู่สวรรคาลัย",reactions:10,comments:0,shares:0},
+  {date:"11/06",month:"มิ.ย. 69",type:"รูปภาพ",title:"ช่วงฤดูฝนในประเทศไทยมักเป็นเวลาที่บ้านและที่อยู่อาศัยต้อง",reactions:4,comments:0,shares:1},
+  {date:"12/06",month:"มิ.ย. 69",type:"รูปภาพ",title:"คืนนี้...เสียงเชียร์อาจดังแค่ 90 นาที ⚽️ แต่ผลลัพธ์ของ",reactions:9,comments:0,shares:3},
+  {date:"13/06",month:"มิ.ย. 69",type:"รูปภาพ",title:"ดี ไฮจีนิค ขอขอบคุณ Cosmo Clinic ที่ไว้ใจใช้บริการทำความ",reactions:5,comments:0,shares:1},
+  {date:"14/06",month:"มิ.ย. 69",type:"รูปภาพ",title:"🌧️ เข้าสู่ฤดูฝนแบบนี้…อาการภูมิแพ้มักถามหา! 🤧",reactions:8,comments:0,shares:2},
+  {date:"16/06",month:"มิ.ย. 69",type:"วิดีโอ",title:"คุณกิ๊ก สุวัจนี มั่นใจ‼ เลือกใช้บริการทำความสะอาดฆ่าเชื้อ",reactions:9,comments:0,shares:1},
+  {date:"17/06",month:"มิ.ย. 69",type:"รูปภาพ",title:"#ฤดูฝน เป็นฤดู 🌧️ ที่พบการระบาดของ #โรคตาแดง มากกว่าฤดูอื่น",reactions:3,comments:0,shares:0},
+  {date:"18/06",month:"มิ.ย. 69",type:"รูปภาพ",title:"💚 ที่นอนสะอาด ความสุขที่แบ่งปันได้ ดี ไฮจีนิค ส่งต่อ",reactions:17,comments:4,shares:6},
+  {date:"18/06",month:"มิ.ย. 69",type:"รูปภาพ",title:"เพราะการนอนที่ดี...ควรมีแค่คุณและคนที่คุณรัก ไม่ใช่ไรฝุ่น",reactions:6,comments:0,shares:1},
+  {date:"19/06",month:"มิ.ย. 69",type:"วิดีโอ",title:"ที่นอนที่ดูสะอาด...อาจไม่ได้สะอาดอย่างที่คิด ! ไรฝุ่น",reactions:24,comments:1,shares:10},
+  {date:"20/06",month:"มิ.ย. 69",type:"รูปภาพ",title:"ดี ไฮจีนิค 💚 ขอขอบคุณ Grand Song ที่ไว้ใจใช้บริการ",reactions:14,comments:0,shares:3},
+  {date:"21/06",month:"มิ.ย. 69",type:"รูปภาพ",title:"ช่วงหน้าฝน ร่างกายอ่อนแอ เสี่ยงต่อหวัดและภูมิแพ้ได้ง่าย",reactions:6,comments:0,shares:1},
+];
+
+// ── Compute per-month per-type for chart ──
+const MONTHS   = ['เม.ย. 69','พ.ค. 69','มิ.ย. 69'];
+const MCOL     = {'เม.ย. 69':'month-apr','พ.ค. 69':'month-may','มิ.ย. 69':'month-jun'};
+
+const stats = {};
+MONTHS.forEach(m => { stats[m]={img:{n:0,r:0,c:0,s:0},video:{n:0,r:0,c:0,s:0},link:{n:0,r:0,c:0,s:0}}; });
+POSTS.forEach(p => {
+  const m = p.month, k = p.type==='รูปภาพ'?'img':p.type==='วิดีโอ'?'video':'link';
+  if(!stats[m]) return;
+  stats[m][k].n++;
+  stats[m][k].r += p.reactions;
+  stats[m][k].c += p.comments;
+  stats[m][k].s += p.shares;
+});
+
+// ── Chart ──
+new Chart(document.getElementById('mainChart'), {
+  type: 'bar',
+  data: {
+    labels: MONTHS,
+    datasets: [
+      {
+        label: '🖼️ ภาพนิ่ง (จำนวนโพสต์)',
+        data: MONTHS.map(m => stats[m].img.n),
+        backgroundColor: '#a5d6a7',
+        borderColor: '#2e7d32',
+        borderWidth: 1.5,
+        borderRadius: 6,
+        yAxisID: 'yPosts',
+        order: 2,
+      },
+      {
+        label: '🎬 วิดีโอ (จำนวนโพสต์)',
+        data: MONTHS.map(m => stats[m].video.n),
+        backgroundColor: '#90caf9',
+        borderColor: '#1565c0',
+        borderWidth: 1.5,
+        borderRadius: 6,
+        yAxisID: 'yPosts',
+        order: 2,
+      },
+      {
+        label: '🔗 ลิงก์ (จำนวนโพสต์)',
+        data: MONTHS.map(m => stats[m].link.n),
+        backgroundColor: '#ffcc80',
+        borderColor: '#e65100',
+        borderWidth: 1.5,
+        borderRadius: 6,
+        yAxisID: 'yPosts',
+        order: 2,
+      },
+      {
+        label: '📈 Engagement รวม (ทุกประเภท)',
+        data: MONTHS.map(m => {
+          const d = stats[m];
+          return (d.img.r+d.img.c+d.img.s)+(d.video.r+d.video.c+d.video.s)+(d.link.r+d.link.c+d.link.s);
+        }),
+        type: 'line',
+        borderColor: '#e53935',
+        backgroundColor: '#e5393520',
+        borderWidth: 2.5,
+        pointRadius: 6,
+        pointBackgroundColor: '#e53935',
+        tension: 0.3,
+        fill: true,
+        yAxisID: 'yEng',
+        order: 1,
+      },
+    ]
+  },
+  options: {
+    responsive: true,
+    interaction: { mode:'index', intersect:false },
+    plugins: {
+      legend: {
+        labels: { color:'#1b2e1b', boxWidth:14, padding:16, font:{size:12} }
+      },
+      tooltip: {
+        backgroundColor:'#fff',
+        borderColor:'#d8e8d8',
+        borderWidth:1,
+        titleColor:'#1b2e1b',
+        bodyColor:'#3a5a3a',
+        padding:12,
+        callbacks: {
+          afterBody: (items) => {
+            const m = MONTHS[items[0].dataIndex];
+            const d = stats[m];
+            return [
+              '',
+              `── ภาพนิ่ง: ❤️${d.img.r} 💬${d.img.c} 🔗${d.img.s}`,
+              `── วิดีโอ:  ❤️${d.video.r.toLocaleString()} 💬${d.video.c} 🔗${d.video.s}`,
+            ];
+          }
+        }
+      }
+    },
+    scales: {
+      yPosts: {
+        type: 'linear', position: 'left',
+        title: { display:true, text:'จำนวนโพสต์', color:'#6a8f6a', font:{size:11} },
+        grid: { color:'#e8f0e8' },
+        ticks: { color:'#6a8f6a', stepSize:5 },
+        beginAtZero: true,
+      },
+      yEng: {
+        type: 'linear', position: 'right',
+        title: { display:true, text:'Engagement รวม', color:'#e53935', font:{size:11} },
+        grid: { drawOnChartArea: false },
+        ticks: {
+          color:'#e53935',
+          callback: v => v>=1000 ? (v/1000).toFixed(1)+'K' : v
+        },
+        beginAtZero: true,
+      },
+      x: {
+        grid: { color:'#e8f0e8' },
+        ticks: { color:'#1b2e1b', font:{size:13, weight:'600'} }
+      }
+    }
+  }
+});
+
+// ── Table ──
+const tbody = document.getElementById('tBody');
+let totR=0, totC=0, totS=0;
+POSTS.forEach(p => {
+  const total = p.reactions+p.comments+p.shares;
+  totR+=p.reactions; totC+=p.comments; totS+=p.shares;
+  const tk = p.type==='รูปภาพ'?'img':p.type==='วิดีโอ'?'video':'link';
+  const tLabel = p.type==='รูปภาพ'?'🖼️ ภาพ':p.type==='วิดีโอ'?'🎬 วิดีโอ':'🔗 ลิงก์';
+  tbody.innerHTML += `
+    <tr ${p.viral?'class="viral"':''}>
+      <td>${p.date}</td>
+      <td>${p.title}${p.viral?' 🔥':''}</td>
+      <td><span class="tag month-${p.month.startsWith('เม')? 'apr':p.month.startsWith('พ')?'may':'jun'}">${p.month}</span></td>
+      <td><span class="tag ${tk}">${tLabel}</span></td>
+      <td class="num-r">${p.reactions.toLocaleString()}</td>
+      <td class="num-c">${p.comments.toLocaleString()}</td>
+      <td class="num-s">${p.shares.toLocaleString()}</td>
+      <td class="num-t">${total.toLocaleString()}</td>
+    </tr>`;
+});
+document.getElementById('tFoot').innerHTML = `
+  <tr>
+    <td colspan="4">รวมทั้งหมด (83 โพสต์)</td>
+    <td>${totR.toLocaleString()}</td>
+    <td>${totC.toLocaleString()}</td>
+    <td>${totS.toLocaleString()}</td>
+    <td>${(totR+totC+totS).toLocaleString()}</td>
+  </tr>`;
+</script>
+</body>
+</html>
