@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>De Hygiénique — กลยุทธ์การ์ดรีวิว &amp; แม่แบบตอบรีวิว Google</title>
+<style>
+  :root {
+    --cream:      #F7F2E7;
+    --paper:      #FFFEFB;
+    --forest:     #1F3A2C;
+    --forest-ink: #142219;
+    --gold:       #B08A4E;
+    --gold-soft:  #E8DAC0;
+    --sage:       #6F8271;
+    --border:     #E4DCC8;
+    --star1:      #B4553F;
+    --star1-bg:   #F7EAE6;
+    --star3:      #B4863B;
+    --star3-bg:   #F8F0DF;
+    --star5:      #2E6B4C;
+    --star5-bg:   #E7F1EA;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--cream);
+    color: var(--forest-ink);
+    font-family: 'Noto Sans Thai', 'Segoe UI', sans-serif;
+    line-height: 1.65;
+    padding: 0 0 80px;
+  }
+  .display {
+    font-family: 'Noto Serif Thai', Georgia, 'Times New Roman', serif;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 28px; }
+
+  /* ── Cover ── */
+  .cover {
+    background: var(--forest);
+    color: var(--cream);
+    padding: 64px 28px 48px;
+    margin-bottom: 8px;
+  }
+  .cover-inner { max-width: 860px; margin: 0 auto; }
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-size: .78rem; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--gold-soft); margin-bottom: 28px;
+  }
+  .brand::before { content: "❧"; font-size: 1rem; color: var(--gold); }
+  .cover h1 {
+    font-size: 2.15rem; font-weight: 600; text-wrap: balance;
+    color: var(--paper); max-width: 620px;
+  }
+  .cover p.lead {
+    margin-top: 14px; color: var(--gold-soft); font-size: 1.02rem; max-width: 560px;
+  }
+  .cover .meta {
+    margin-top: 28px; display: flex; gap: 18px; flex-wrap: wrap;
+    font-size: .8rem; color: #B9C9BC;
+  }
+  .cover .meta span { border-left: 2px solid var(--gold); padding-left: 10px; }
+
+  /* ── Sections ── */
+  section { padding: 52px 0 0; }
+  .eyebrow {
+    font-size: .74rem; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--gold); font-weight: 600; margin-bottom: 8px;
+  }
+  h2 {
+    font-family: 'Noto Serif Thai', Georgia, serif;
+    font-size: 1.5rem; font-weight: 600; color: var(--forest);
+    text-wrap: balance; margin-bottom: 6px;
+  }
+  h2 + .sub { color: var(--sage); font-size: .93rem; margin-bottom: 24px; max-width: 640px; }
+  h3 { font-size: 1.05rem; font-weight: 700; color: var(--forest); margin-bottom: 10px; }
+  p { margin-bottom: 12px; max-width: 680px; }
+  strong { color: var(--forest); }
+
+  /* ── Callout ── */
+  .callout {
+    background: var(--paper); border: 1px solid var(--border); border-left: 4px solid var(--gold);
+    border-radius: 10px; padding: 20px 22px; margin: 20px 0;
+  }
+  .callout .label { font-size: .76rem; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); font-weight: 700; margin-bottom: 8px; }
+  .callout ul { margin: 8px 0 0 1.1em; }
+  .callout li { margin-bottom: 6px; }
+  .callout.warn { border-left-color: var(--star1); }
+  .callout.warn .label { color: var(--star1); }
+  .callout.ok { border-left-color: var(--star5); }
+  .callout.ok .label { color: var(--star5); }
+
+  /* ── Card mockup ── */
+  .card-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 24px 0; }
+  .mock {
+    background: var(--paper); border: 1px solid var(--border); border-radius: 16px;
+    overflow: hidden; box-shadow: 0 1px 3px rgba(20,34,25,.06);
+  }
+  .mock-head {
+    background: var(--forest); color: var(--gold-soft);
+    padding: 10px 18px; font-size: .76rem; letter-spacing: .08em; text-transform: uppercase;
+    display: flex; justify-content: space-between;
+  }
+  .mock-body { padding: 22px 22px 20px; font-size: .9rem; }
+  .mock-body .script { font-family: 'Noto Serif Thai', serif; font-size: 1.3rem; color: var(--forest); margin-bottom: 6px; }
+  .mock-body p { font-size: .87rem; margin-bottom: 10px; }
+  .mock-body .fine { color: var(--sage); font-size: .8rem; }
+  .mock-body hr { border: none; border-top: 1px dashed var(--border); margin: 12px 0; }
+  .mock-list { margin: 0 0 10px 1.1em; font-size: .87rem; }
+  .mock-list li { margin-bottom: 4px; }
+  .mock-num {
+    display: inline-flex; width: 20px; height: 20px; border-radius: 50%;
+    background: var(--forest); color: var(--paper); align-items: center; justify-content: center;
+    font-size: .72rem; font-weight: 700; margin-right: 8px; flex-shrink: 0;
+  }
+  .mock-step { display: flex; gap: 4px; align-items: flex-start; margin-bottom: 10px; font-size: .87rem; }
+
+  /* ── Timeline ── */
+  .timeline { margin: 24px 0; border-left: 2px solid var(--border); padding-left: 0; }
+  .tstep { display: grid; grid-template-columns: 44px 1fr; gap: 16px; padding: 0 0 26px 0; position: relative; }
+  .tstep::before {
+    content: ''; position: absolute; left: -2px; top: 4px; width: 8px; height: 8px;
+    border-radius: 50%; background: var(--gold); transform: translateX(-3.5px);
+  }
+  .tnum {
+    width: 44px; height: 44px; border-radius: 50%; background: var(--forest); color: var(--gold-soft);
+    display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: .95rem;
+    margin-left: 18px; flex-shrink: 0;
+  }
+  .tstep .tbody h4 { font-size: .96rem; font-weight: 700; color: var(--forest); margin-bottom: 4px; }
+  .tstep .tbody p { font-size: .88rem; margin-bottom: 0; }
+
+  /* ── Framework steps ── */
+  .steps { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; margin: 22px 0; }
+  .step {
+    background: var(--paper); border: 1px solid var(--border); border-radius: 12px;
+    padding: 14px 12px; font-size: .78rem;
+  }
+  .step .n { font-family: 'Noto Serif Thai', serif; font-size: 1.3rem; color: var(--gold); margin-bottom: 6px; }
+  .step .t { font-weight: 700; color: var(--forest); margin-bottom: 4px; font-size: .82rem; }
+
+  /* ── Template cards ── */
+  .tpl {
+    background: var(--paper); border: 1px solid var(--border); border-radius: 14px;
+    margin: 18px 0; overflow: hidden;
+  }
+  .tpl-head {
+    display: flex; align-items: center; gap: 10px; padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .chip {
+    font-size: .74rem; font-weight: 700; padding: 4px 11px; border-radius: 20px;
+    letter-spacing: .02em; white-space: nowrap;
+  }
+  .chip.s1 { background: var(--star1-bg); color: var(--star1); }
+  .chip.s3 { background: var(--star3-bg); color: var(--star3); }
+  .chip.s5 { background: var(--star5-bg); color: var(--star5); }
+  .tpl-head .cat { font-weight: 700; color: var(--forest); font-size: .94rem; }
+  .tpl-body { padding: 18px 20px 20px; font-size: .89rem; }
+  .tpl-body p { margin-bottom: 10px; max-width: none; }
+  .tpl-body p:last-child { margin-bottom: 0; }
+  .ph { color: var(--gold); font-weight: 600; background: var(--gold-soft); padding: 0 4px; border-radius: 4px; }
+  .tpl-note { font-size: .78rem; color: var(--sage); padding: 10px 20px; background: var(--cream); border-top: 1px dashed var(--border); }
+
+  /* ── checklist ── */
+  .dodont { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 20px 0; }
+  .dcard { border-radius: 14px; padding: 18px 20px; }
+  .dcard.do { background: var(--star5-bg); border: 1px solid #CBE0D2; }
+  .dcard.dont { background: var(--star1-bg); border: 1px solid #EAD1CB; }
+  .dcard h4 { font-size: .88rem; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
+  .dcard.do h4 { color: var(--star5); }
+  .dcard.dont h4 { color: var(--star1); }
+  .dcard ul { margin-left: 1.1em; font-size: .87rem; }
+  .dcard li { margin-bottom: 6px; }
+
+  footer {
+    max-width: 860px; margin: 60px auto 0; padding: 24px 28px 0; border-top: 1px solid var(--border);
+    color: var(--sage); font-size: .8rem;
+  }
+
+  @media (max-width: 640px) {
+    .card-pair, .dodont { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: repeat(2,1fr); }
+    .cover h1 { font-size: 1.6rem; }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --cream: #14201A; --paper: #1B2921; --forest: #B7D4C0; --forest-ink: #EAF2EC;
+      --gold: #D8B778; --gold-soft: #3A3524; --sage: #93A99B; --border: #2E3E34;
+      --star1-bg: #3A2420; --star3-bg: #3A3320; --star5-bg: #1E3226;
+    }
+    .cover { background: #0E1712; }
+    .cover h1 { color: #F3F7F4; }
+    .mock-head { background: #0E1712; }
+    .tnum { background: #0E1712; }
+  }
+  :root[data-theme="dark"] {
+    --cream: #14201A; --paper: #1B2921; --forest: #B7D4C0; --forest-ink: #EAF2EC;
+    --gold: #D8B778; --gold-soft: #3A3524; --sage: #93A99B; --border: #2E3E34;
+    --star1-bg: #3A2420; --star3-bg: #3A3320; --star5-bg: #1E3226;
+  }
+  :root[data-theme="dark"] .cover { background: #0E1712; }
+  :root[data-theme="dark"] .cover h1 { color: #F3F7F4; }
+  :root[data-theme="dark"] .mock-head { background: #0E1712; }
+  :root[data-theme="dark"] .tnum { background: #0E1712; }
+  :root[data-theme="light"] {
+    --cream: #F7F2E7; --paper: #FFFEFB; --forest: #1F3A2C; --forest-ink: #142219;
+    --gold: #B08A4E; --gold-soft: #E8DAC0; --sage: #6F8271; --border: #E4DCC8;
+    --star1-bg: #F7EAE6; --star3-bg: #F8F0DF; --star5-bg: #E7F1EA;
+  }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="cover-inner">
+    <div class="brand">De Hygiénique</div>
+    <h1 class="display">กลยุทธ์การ์ดขอบคุณในกล่องสินค้า &amp; แม่แบบตอบรีวิว Google Maps</h1>
+    <p class="lead">แนวทางเพิ่มรีวิวเชิงบวกอย่างถูกนโยบาย Google พร้อมชุดข้อความตอบรีวิวแยกตามสถานการณ์จริง ให้ลูกค้าที่เข้ามาอ่านรู้สึกว่าแบรนด์ฟังจริง ไม่ใช่ตอบอัตโนมัติ</p>
+    <div class="meta">
+      <span>สำหรับทีมการตลาด &amp; ฝ่ายบริการลูกค้า</span>
+      <span>อ้างอิงจากการ์ดต้นแบบ "Thank You" หน้า-หลัง</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <section id="policy">
+    <div class="eyebrow">ส่วนที่ 1</div>
+    <h2>แนวทางการ์ดขอรีวิวให้ถูกนโยบาย Google</h2>
+    <p class="sub">แนวคิดของคุณ (แนบการ์ดในกล่อง + ขอวิดีโอแกะกล่องกันสินค้าเสียหาย + ขอรีวิว) ใช้ได้ แต่มีจุดที่ต้องระวังไม่ให้กลายเป็น "การซื้อรีวิว" ในสายตา Google</p>
+
+    <div class="callout warn">
+      <div class="label">ข้อควรระวัง — Review Gating</div>
+      <p style="margin-bottom:0">Google ห้าม “คัดกรอง” ว่าจะขอรีวิวจากใคร (เช่น ขอเฉพาะลูกค้าที่พอใจ) และห้ามเสนอของแถม ส่วนลด หรือผลประโยชน์ใด ๆ เพื่อแลกกับรีวิว โดยเฉพาะการระบุว่าต้องเป็น <strong>5 ดาว</strong> เท่านั้น หากตรวจพบ Google มีสิทธิ์ลบรีวิวยกชุดหรือระงับ Business Profile ทั้งหมด ซึ่งเสียหายกว่ารีวิวแย่ ๆ ไม่กี่รีวิวมาก</p>
+    </div>
+
+    <div class="callout ok">
+      <div class="label">สิ่งที่การ์ดต้นแบบทำถูกอยู่แล้ว</div>
+      <ul>
+        <li>ข้อความขอรีวิว ("แบ่งปันประสบการณ์ของคุณบน Google") เป็นการขอทั่วไป ไม่ได้ระบุจำนวนดาว — ใช้ได้</li>
+        <li>แยกเรื่อง "วิดีโอแกะกล่องเพื่อเคลมสินค้าเสียหาย" ออกจากเรื่อง "ขอรีวิว" เป็นคนละหน้าคนละวัตถุประสงค์ชัดเจน — ไม่ผูกเป็นการแลกเปลี่ยนกัน ถูกต้องแล้ว</li>
+        <li>มีช่องทาง LINE OA ให้ลูกค้าที่มีปัญหาทักหาโดยตรง เป็นการดักปัญหาก่อนกลายเป็นรีวิว 1 ดาวสาธารณะ</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <div class="label">ปรับเพิ่มอีกนิด</div>
+      <ul>
+        <li>อย่าเติมคำว่า "5 ดาว" หรือ "ให้คะแนนเต็ม" ลงในข้อความบนการ์ดเด็ดขาด ใช้คำว่า "แบ่งปันประสบการณ์" หรือ "รีวิวตามจริง" แทน ดาว 5 ดวงที่เป็นภาพกราฟิกประกอบโลโก้ Google ยังใช้ได้เพราะเป็นสัญลักษณ์ระบบให้คะแนนของ Google เอง ไม่ใช่คำสั่ง</li>
+        <li>ห้ามแนบส่วนลด/คูปอง/ของแถมในการ์ดใบเดียวกับ QR รีวิว แม้จะดูเป็นการขอบคุณเฉย ๆ ก็อาจถูกตีความว่าเป็นสินบนแลกรีวิวได้ ถ้าอยากให้ส่วนลด ให้แจกเป็น "ส่วนลดครั้งถัดไป" แก่ลูกค้าทุกคนที่ซื้อ โดยไม่ผูกเงื่อนไขกับการรีวิว</li>
+        <li>เพิ่มประโยคสั้น ๆ ปิดท้ายว่า "ไม่ว่าดาวเท่าไหร่ ทีมงานอ่านทุกรีวิวค่ะ" เพื่อส่งสัญญาณว่าอยากได้รีวิว<em>ตามจริง</em> ไม่ใช่แค่รีวิวบวก — ข้อความแบบนี้ช่วยเรื่อง compliance และยังทำให้รีวิวที่ได้มาดูน่าเชื่อถือกว่าในสายตาลูกค้าใหม่ที่มาอ่าน</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="timing">
+    <div class="eyebrow">ส่วนที่ 2</div>
+    <h2>จังหวะเวลาที่แนะนำ</h2>
+    <p class="sub">การ์ดในกล่องอย่างเดียวมักได้รีวิวจาก "ความประทับใจแรก" เท่านั้น ลูกค้าที่รีวิวหลังได้ลองใช้สินค้าจริงจะให้รีวิวที่มีเนื้อหาและน่าเชื่อถือกว่า</p>
+    <div class="timeline">
+      <div class="tstep"><div class="tnum">1</div><div class="tbody"><h4>วันที่ 0 — พัสดุถึงมือลูกค้า</h4><p>การ์ดหน้า-หลังอยู่ในกล่อง เตือนให้ถ่ายวิดีโอตอนแกะกล่องไว้เป็นหลักฐาน (สำหรับกรณีสินค้าเสียหาย/ไม่ครบ) และแนะนำ QR รีวิวไว้เบา ๆ</p></div></div>
+      <div class="tstep"><div class="tnum">2</div><div class="tbody"><h4>วันที่ 3-5 — หน้าต่างแจ้งปัญหา</h4><p>ตามที่ระบุในการ์ด ลูกค้าสามารถแจ้งสินค้าเสียหาย/ไม่ครบ/ผิดรุ่นได้ในช่วงนี้ ทีมงานควรตอบไวและจัดส่งสินค้าใหม่ให้ตามสัญญา เพื่อลดโอกาสเกิดรีวิว 1 ดาว</p></div></div>
+      <div class="tstep"><div class="tnum">3</div><div class="tbody"><h4>วันที่ 6-9 — ส่งข้อความติดตามผล</h4><p>ยิง LINE OA/SMS สั้น ๆ ถามว่า "ใช้เป็นไงบ้างคะ" พร้อมแนบลิงก์รีวิวอีกครั้ง ช่วงนี้ลูกค้าได้ลองใช้สินค้าแล้วจริง รีวิวที่ได้จะพูดถึงผลลัพธ์การใช้งาน ไม่ใช่แค่ "แพ็คสวย ส่งไว"</p></div></div>
+      <div class="tstep"><div class="tnum">4</div><div class="tbody"><h4>ถ้าลูกค้าตอบไม่ดี</h4><p>ดึงเข้าไปคุยต่อใน LINE ส่วนตัวเพื่อแก้ปัญหาก่อนเสมอ อย่าส่งลิงก์รีวิว Google ให้ลูกค้าที่กำลังไม่พอใจในจังหวะนั้น</p></div></div>
+    </div>
+  </section>
+
+  <section id="card">
+    <div class="eyebrow">ส่วนที่ 3</div>
+    <h2>ตัวอย่างข้อความบนการ์ด (ปรับจากต้นแบบ)</h2>
+    <p class="sub">คงโทนเดิมของการ์ดไว้เกือบทั้งหมด ปรับคำเพียงเล็กน้อยให้ปลอดภัยเชิงนโยบายและดูจริงใจขึ้น</p>
+    <div class="card-pair">
+      <div class="mock">
+        <div class="mock-head"><span>ด้านหน้า</span><span>Thank You</span></div>
+        <div class="mock-body">
+          <div class="script">Thank You</div>
+          <p>ขอบคุณที่ไว้วางใจ De Hygiénique</p>
+          <p>ทุกความคิดเห็นของคุณคือกำลังใจสำคัญของทีมงาน</p>
+          <p>หากคุณพึงพอใจกับสินค้าและบริการของเรา เรายินดีเป็นอย่างยิ่งหากคุณจะแบ่งปันประสบการณ์ของคุณบน Google ค่ะ</p>
+          <hr>
+          <p class="fine">[QR Code รีวิว Google] — ไม่ว่าดาวเท่าไหร่ ทีมงานอ่านทุกรีวิวค่ะ</p>
+        </div>
+      </div>
+      <div class="mock">
+        <div class="mock-head"><span>ด้านหลัง</span><span>เมื่อได้รับสินค้า</span></div>
+        <div class="mock-body">
+          <div class="mock-step"><span class="mock-num">1</span><span><strong>ก่อนเปิดกล่อง</strong> — โปรดถ่ายวิดีโอขณะแกะกล่องสินค้าไว้ตลอดการเปิด</span></div>
+          <div class="mock-step"><span class="mock-num">2</span><span><strong>หากพบว่า</strong> สินค้าเสียหาย / ไม่ครบ / ผิดรุ่น</span></div>
+          <div class="mock-step"><span class="mock-num">3</span><span>แจ้งทีมงานภายใน <strong>3-5 วัน</strong> หลังได้รับสินค้า พร้อมส่งวิดีโอประกอบ เพื่อดำเนินการเปลี่ยนสินค้าอย่างรวดเร็ว</span></div>
+          <hr>
+          <p class="fine">[QR LINE Official] Need help? หากต้องการความช่วยเหลือ ติดต่อเราได้ทันที</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="framework">
+    <div class="eyebrow">ส่วนที่ 4</div>
+    <h2>หลักการตอบรีวิว 5 ขั้นตอน</h2>
+    <p class="sub">ใช้เป็นโครงสำหรับรีวิว 1-2 ดาวทุกกรณี ส่วนรีวิว 3 ดาวขึ้นไปปรับให้กระชับลง</p>
+    <div class="steps">
+      <div class="step"><div class="n">01</div><div class="t">ขอบคุณ</div>ที่สละเวลาให้ feedback</div>
+      <div class="step"><div class="n">02</div><div class="t">ขอโทษ</div>กับประสบการณ์ที่เกิดขึ้น (ไม่ต้องยอมรับผิดเสมอไป)</div>
+      <div class="step"><div class="n">03</div><div class="t">ระบุปัญหา</div>สรุปว่าเข้าใจว่าลูกค้าเจออะไร</div>
+      <div class="step"><div class="n">04</div><div class="t">แนวทางแก้</div>บอกว่าจะตรวจสอบ/ปรับปรุงอย่างไร</div>
+      <div class="step"><div class="n">05</div><div class="t">เชิญติดต่อ</div>ชวนคุยต่อในช่องทางส่วนตัว</div>
+    </div>
+  </section>
+
+  <section id="templates">
+    <div class="eyebrow">ส่วนที่ 5</div>
+    <h2>คลังแม่แบบข้อความตอบรีวิว</h2>
+    <p class="sub">แยกตามประเภทปัญหา ไม่ใช้ข้อความเดียวซ้ำทุกเคส — <span class="ph">[ตัวแปร]</span> คือจุดที่ต้องแก้ให้ตรงกับลูกค้าและเคสจริงก่อนโพสต์เสมอ</p>
+
+    <div class="tpl">
+      <div class="tpl-head"><span class="chip s1">1 ดาว</span><span class="cat">สินค้าเสียหาย / ชำรุด</span></div>
+      <div class="tpl-body">
+        <p>ขอบคุณคุณ<span class="ph">[ชื่อลูกค้า]</span>มากค่ะ ที่สละเวลาแจ้งเรื่องนี้ให้ทีมงานทราบ 🙏 ทาง De Hygiénique ต้องขออภัยเป็นอย่างสูงสำหรับความไม่สะดวกที่เกิดขึ้นกับสินค้าที่ได้รับค่ะ</p>
+        <p>จากที่คุณเล่ามา ทีมงานเข้าใจว่าสินค้าที่ได้รับมีลักษณะ<span class="ph">[ชำรุด/เสียหาย]</span> ซึ่งไม่ใช่มาตรฐานที่เราตั้งใจส่งมอบให้ลูกค้าทุกท่านเลยค่ะ</p>
+        <p>ทีมงานจะนำเคสนี้ไปตรวจสอบขั้นตอนการแพ็คและขนส่งร่วมกับคลังสินค้าโดยละเอียด เพื่อป้องกันไม่ให้เกิดปัญหาซ้ำอีกค่ะ</p>
+        <p>รบกวนคุณ<span class="ph">[ชื่อลูกค้า]</span>ทักแชท LINE Official @dehygienique พร้อมแนบวิดีโอ/รูปตอนแกะกล่อง เพื่อให้ทีมงานดำเนินการเปลี่ยนสินค้าใหม่ให้ทันทีนะคะ ขอบคุณอีกครั้งค่ะ 💚</p>
+      </div>
+      <div class="tpl-note">ใช้เมื่อ: มีรูป/คำบรรยายชัดว่าสินค้าเสียหายจริง — เชื่อมกับนโยบายวิดีโอแกะกล่องบนการ์ดโดยตรง</div>
+    </div>
+
+    <div class="tpl">
+      <div class="tpl-head"><span class="chip s1">1 ดาว</span><span class="cat">จัดส่งล่าช้า</span></div>
+      <div class="tpl-body">
+        <p>ขอบคุณสำหรับความคิดเห็นค่ะคุณ<span class="ph">[ชื่อลูกค้า]</span> ทีมงานขออภัยจริง ๆ ค่ะที่การจัดส่งครั้งนี้ทำให้คุณต้องรอนานเกินกว่าที่ควรจะเป็น</p>
+        <p>ทีมงานเข้าใจดีว่าการรอสินค้านานส่งผลต่อความรู้สึกและแผนการใช้งานของคุณ โดยเฉพาะหากเป็นของที่ต้องใช้เร่งด่วนค่ะ</p>
+        <p>ทางเราได้ส่งเรื่องนี้ให้ทีมโลจิสติกส์ตรวจสอบต้นตอความล่าช้าของออเดอร์นี้แล้ว และกำลังทบทวนรอบเวลาจัดส่งกับขนส่งที่เกี่ยวข้องเพื่อไม่ให้เกิดซ้ำค่ะ</p>
+        <p>หากยังไม่ได้รับสินค้า หรืออยากทราบสถานะออเดอร์ <span class="ph">[เลขออเดอร์]</span> รบกวนทักแชท LINE Official @dehygienique ได้เลยนะคะ ทีมงานจะเร่งตรวจสอบให้ทันทีค่ะ</p>
+      </div>
+      <div class="tpl-note">ใช้เมื่อ: ปัญหาอยู่ที่ขนส่ง ไม่ใช่ตัวสินค้า — เน้นความเข้าใจเรื่องเวลา ไม่ใช่แก้ตัวแทนขนส่ง</div>
+    </div>
+
+    <div class="tpl">
+      <div class="tpl-head"><span class="chip s1">1 ดาว</span><span class="cat">สินค้าไม่ครบ / ผิดรุ่น</span></div>
+      <div class="tpl-body">
+        <p>ขอบคุณที่แจ้งให้ทีมงานทราบค่ะคุณ<span class="ph">[ชื่อลูกค้า]</span> ต้องขออภัยอย่างสูงสำหรับความผิดพลาดในการจัดออเดอร์ที่เกิดขึ้นค่ะ</p>
+        <p>ทีมงานเข้าใจว่าคุณได้รับ<span class="ph">[สินค้าไม่ครบ/สินค้าผิดรุ่น]</span> ซึ่งเป็นความผิดพลาดในขั้นตอนแพ็คสินค้าของทีมคลังค่ะ</p>
+        <p>ทางเราได้แจ้งทีมคลังให้ตรวจสอบขั้นตอนการเช็กสินค้าก่อนแพ็คใหม่อีกครั้งเพื่อป้องกันความผิดพลาดซ้ำค่ะ</p>
+        <p>รบกวนคุณ<span class="ph">[ชื่อลูกค้า]</span>ทักแชท LINE Official @dehygienique พร้อมแจ้งเลขออเดอร์และรูปสินค้าที่ได้รับ ทีมงานจะจัดส่งของที่ขาด/เปลี่ยนรุ่นที่ถูกต้องให้โดยเร็วที่สุดค่ะ</p>
+      </div>
+      <div class="tpl-note">ใช้เมื่อ: ปัญหาที่ต้นเหตุการแพ็ค ไม่ใช่ตัวสินค้าเสียหาย — เน้นแก้ที่กระบวนการคลัง</div>
+    </div>
+
+    <div class="tpl">
+      <div class="tpl-head"><span class="chip s1">1 ดาว</span><span class="cat">พนักงาน / บริการลูกค้าไม่ประทับใจ</span></div>
+      <div class="tpl-body">
+        <p>ขอบคุณคุณ<span class="ph">[ชื่อลูกค้า]</span>ที่ให้ feedback ตรงไปตรงมาค่ะ ทีมงานขออภัยจริง ๆ ที่การให้บริการครั้งนี้ทำให้คุณรู้สึกไม่ดีค่ะ</p>
+        <p>ทีมงานเข้าใจว่าประสบการณ์ในการติดต่อ<span class="ph">[ช่องทาง/แผนกที่เกี่ยวข้อง]</span>ไม่ได้เป็นไปตามมาตรฐานการดูแลลูกค้าที่เราตั้งใจไว้ค่ะ</p>
+        <p>ทางทีมงานจะนำเคสนี้ไปทบทวนร่วมกับทีมที่เกี่ยวข้อง เพื่อปรับปรุงวิธีการสื่อสารและดูแลลูกค้าให้ดีขึ้นค่ะ</p>
+        <p>หากคุณสะดวก รบกวนทักแชท LINE Official @dehygienique เล่ารายละเอียดเพิ่มเติมให้ทีมงานฟังได้เลยนะคะ เพื่อให้เราแก้ไขและดูแลคุณอย่างเหมาะสมค่ะ 🙏</p>
+      </div>
+      <div class="tpl-note">ใช้เมื่อ: เรื่องทัศนคติ/การสื่อสารของพนักงาน — หลีกเลี่ยงการแก้ต่างแทนพนักงานเป็นรายบุคคลในที่สาธารณะ</div>
+    </div>
+
+    <div class="tpl">
+      <div class="tpl-head"><span class="chip s1">1 ดาว</span><span class="cat">ราคา / ความคุ้มค่า</span></div>
+      <div class="tpl-body">
+        <p>ขอบคุณสำหรับความคิดเห็นค่ะคุณ<span class="ph">[ชื่อลูกค้า]</span> ทีมงานรับฟังและเข้าใจมุมมองเรื่องราคาที่คุณสะท้อนมาค่ะ</p>
+        <p>De Hygiénique ตั้งราคาสินค้าโดยคำนึงถึง<span class="ph">[วัตถุดิบ/มาตรฐานการผลิต/ปริมาณ]</span>ที่ใช้ในผลิตภัณฑ์ ซึ่งทีมงานเข้าใจว่าอาจไม่ตรงกับความคาดหวังด้านราคาของลูกค้าทุกท่านค่ะ</p>
+        <p>ทีมงานได้ส่งต่อความคิดเห็นนี้ให้ฝ่ายผลิตภัณฑ์เพื่อพิจารณาทางเลือกขนาด/โปรโมชันที่เข้าถึงง่ายขึ้นในอนาคตค่ะ</p>
+        <p>หากมีข้อสงสัยเรื่องส่วนผสมหรือโปรโมชันปัจจุบัน ทักมาคุยกับทีมงานทาง LINE Official @dehygienique ได้เลยนะคะ ยินดีให้ข้อมูลเพิ่มเติมค่ะ</p>
+      </div>
+      <div class="tpl-note">ใช้เมื่อ: เป็นความเห็นส่วนตัวเรื่องราคา ไม่ใช่ข้อผิดพลาด — เน้นอธิบายคุณค่า ไม่ใช่ขอโทษเรื่องราคา</div>
+    </div>
+
+    <div class="tpl">
+      <div class="tpl-head"><span class="chip s3">2-3 ดาว</span><span class="cat">ผสมทั้งดีและไม่ดี</span></div>
+      <div class="tpl-body">
+        <p>ขอบคุณสำหรับรีวิวค่ะคุณ<span class="ph">[ชื่อลูกค้า]</span> ดีใจที่คุณชอบ<span class="ph">[จุดที่ลูกค้าชม เช่น กลิ่น/บรรจุภัณฑ์]</span> และขอบคุณที่สะท้อนเรื่อง<span class="ph">[จุดที่ลูกค้าติ]</span>ให้ทีมงานทราบด้วยค่ะ</p>
+        <p>ทีมงานรับข้อเสนอแนะนี้ไว้พิจารณาปรับปรุงในรุ่นถัดไปแน่นอนค่ะ 🙏 หากมีคำแนะนำเพิ่มเติม ทักมาคุยกับทีมงานทาง LINE Official @dehygienique ได้เสมอนะคะ ขอบคุณที่ให้โอกาส De Hygiénique ดูแลคุณค่ะ</p>
+      </div>
+      <div class="tpl-note">ใช้เมื่อ: รีวิวมีทั้งชมและติ — ตอบสั้นกว่ารีวิว 1 ดาว ไม่ต้องมีขั้นตอนขอโทษเต็มรูปแบบถ้าไม่มีความผิดพลาดจริง</div>
+    </div>
+
+    <div class="tpl">
+      <div class="tpl-head"><span class="chip s5">4-5 ดาว</span><span class="cat">รีวิวเชิงบวก — สลับใช้ 3 แบบ</span></div>
+      <div class="tpl-body">
+        <p><strong>แบบที่ 1:</strong> ขอบคุณมาก ๆ ค่ะคุณ<span class="ph">[ชื่อลูกค้า]</span> 💚 ดีใจที่<span class="ph">[สินค้า]</span>ถูกใจและช่วยตอบโจทย์การดูแล<span class="ph">[ผิว/บ้าน/ลูกน้อย ฯลฯ]</span>ของคุณค่ะ ทีมงานจะตั้งใจรักษามาตรฐานแบบนี้ต่อไปนะคะ แล้วพบกันใหม่ค่ะ</p>
+        <p><strong>แบบที่ 2:</strong> ขอบคุณสำหรับรีวิวน่ารัก ๆ นี้ค่ะ 🙏 ทีมงานอ่านแล้วมีกำลังใจมากค่ะคุณ<span class="ph">[ชื่อลูกค้า]</span> หากมีสินค้าตัวไหนอยากให้ De Hygiénique ทำเพิ่ม บอกทีมงานได้เลยนะคะ</p>
+        <p><strong>แบบที่ 3:</strong> ขอบคุณที่ไว้วางใจ De Hygiénique ค่ะคุณ<span class="ph">[ชื่อลูกค้า]</span> โดยเฉพาะที่พูดถึง<span class="ph">[จุดเด่นที่ลูกค้าชม]</span> เพราะเป็นสิ่งที่ทีมงานตั้งใจมากในการพัฒนาสินค้าค่ะ แล้วเจอกันในออเดอร์ถัดไปนะคะ 💛</p>
+      </div>
+      <div class="tpl-note">สลับใช้ทั้ง 3 แบบ อย่าตอบข้อความเดียวกันติดกันหลายรีวิว และควรพูดถึงจุดที่ลูกค้าชมจริง ๆ เพื่อให้ดูเหมือนอ่านจริง ไม่ใช่บอทตอบ</div>
+    </div>
+
+    <div class="tpl">
+      <div class="tpl-head"><span class="chip s1">1 ดาว</span><span class="cat">ให้แค่ดาว ไม่มีข้อความ</span></div>
+      <div class="tpl-body">
+        <p>สวัสดีค่ะคุณ<span class="ph">[ชื่อลูกค้า]</span> ขอบคุณที่สละเวลาให้คะแนนนะคะ ทีมงานอยากทราบรายละเอียดเพิ่มเติมเพื่อนำไปปรับปรุงให้ตรงจุดค่ะ รบกวนทักแชท LINE Official @dehygienique เล่าให้ทีมงานฟังได้เลยนะคะ ว่าสินค้าหรือบริการส่วนไหนที่ยังไม่ประทับใจ ทีมงานพร้อมดูแลและแก้ไขให้ค่ะ 🙏</p>
+      </div>
+      <div class="tpl-note">ใช้เมื่อ: ไม่มีบริบทพอจะรู้ว่าปัญหาคืออะไร — เปิดทางให้ลูกค้าอธิบายก่อนตอบแบบเฉพาะเจาะจง</div>
+    </div>
+  </section>
+
+  <section id="checklist">
+    <div class="eyebrow">ส่วนที่ 6</div>
+    <h2>เช็กลิสต์ก่อนโพสต์ตอบรีวิว</h2>
+    <div class="dodont">
+      <div class="dcard do">
+        <h4>ควรทำ</h4>
+        <ul>
+          <li>ปรับ<span class="ph">[ตัวแปร]</span>ให้ตรงกับเคสจริงทุกครั้ง อย่าคัดลอกวางทั้งดุ้น</li>
+          <li>ตอบภายใน 24-48 ชม. เพื่อให้ลูกค้าใหม่เห็นว่าแบรนด์ตอบสนองไว</li>
+          <li>เชิญลูกค้าคุยต่อในช่องทางส่วนตัวเสมอสำหรับเคสที่ต้องแก้ไขจริง</li>
+          <li>สลับสำนวนในรีวิวบวก ไม่ใช้ประโยคเดิมซ้ำติดกัน</li>
+        </ul>
+      </div>
+      <div class="dcard dont">
+        <h4>ไม่ควรทำ</h4>
+        <ul>
+          <li>ห้ามระบุ "5 ดาว" หรือเงื่อนไขแลกรีวิวบนการ์ด/ข้อความใด ๆ</li>
+          <li>ห้ามเถียงหรือกล่าวโทษลูกค้าในคอมเมนต์สาธารณะ แม้จะไม่ใช่ความผิดแบรนด์</li>
+          <li>ห้ามเปิดเผยข้อมูลออเดอร์/เบอร์โทรลูกค้าในคอมเมนต์สาธารณะ</li>
+          <li>ห้ามส่งลิงก์ขอรีวิว Google ให้ลูกค้าที่กำลังต่อว่า/มีปัญหาค้างอยู่</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    เอกสารอ้างอิงภายใน De Hygiénique — จัดทำเพื่อทีมการตลาดและฝ่ายบริการลูกค้าใช้เป็นแนวทาง ปรับปรุงได้ตามสถานการณ์จริง
+  </footer>
+</div>
+</body>
+</html>
